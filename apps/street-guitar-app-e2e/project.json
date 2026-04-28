@@ -1,0 +1,9 @@
+{
+  "name": "street-guitar-app-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/street-guitar-app-e2e/src",
+  "implicitDependencies": ["street-guitar-app"],
+  "// targets": "to see all targets run: nx show project street-guitar-app-e2e --web",
+  "targets": {}
+}

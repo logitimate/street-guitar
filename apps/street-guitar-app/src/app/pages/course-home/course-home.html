@@ -1,0 +1,126 @@
+<!-- ===== COURSE NAV ===== -->
+<nav class="c-nav">
+  <div class="c-nav-inner">
+    <a routerLink="/" class="nav-logo">
+      <span>STREET</span><span class="accent">GUITAR</span>
+    </a>
+    <div class="c-nav-links">
+      <a routerLink="/learn" class="c-nav-link active">My Course</a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin" class="c-nav-link">Admin</a>
+      }
+    </div>
+    <div class="c-nav-user">
+      <div class="user-avatar-chip">{{ auth.user()!.name[0] }}</div>
+      <span class="user-name">{{ auth.user()!.name.split(' ')[0] }}</span>
+      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== WELCOME BANNER ===== -->
+<div class="welcome-banner">
+  <div class="course-container">
+    <div class="welcome-left">
+      <p class="welcome-greeting">Welcome back, {{ auth.user()!.name.split(' ')[0] }} 👋</p>
+      <h1 class="welcome-title">Keep the momentum going.</h1>
+      <p class="welcome-sub">
+        Currently on: <strong>Module {{ currentModule.id }} — {{ currentModule.title }}</strong>
+      </p>
+    </div>
+    <div class="welcome-right">
+      <div class="overall-progress">
+        <div class="op-ring">
+          <svg viewBox="0 0 56 56" class="op-svg">
+            <circle cx="28" cy="28" r="24" class="op-track"/>
+            <circle cx="28" cy="28" r="24" class="op-fill"
+              [style.stroke-dashoffset]="150.8 - (150.8 * overallProgress / 100)"/>
+          </svg>
+          <span class="op-pct">{{ overallProgress }}%</span>
+        </div>
+        <div class="op-info">
+          <p class="op-label">Overall Progress</p>
+          <p class="op-detail">{{ totalLessonsComplete }} / {{ totalLessons }} lessons</p>
+        </div>
+      </div>
+      <a [routerLink]="['/learn/lesson', currentModule.currentLessonId]" class="btn btn-primary btn-lg">
+        Continue Learning →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STATS ROW ===== -->
+<div class="course-stats-row">
+  <div class="course-container">
+    <div class="c-stat">
+      <span class="c-stat-n">4.5h</span>
+      <span class="c-stat-l">Time Practiced</span>
+    </div>
+    <div class="c-stat-sep"></div>
+    <div class="c-stat">
+      <span class="c-stat-n">{{ totalLessonsComplete }}</span>
+      <span class="c-stat-l">Lessons Complete</span>
+    </div>
+    <div class="c-stat-sep"></div>
+    <div class="c-stat">
+      <span class="c-stat-n">7</span>
+      <span class="c-stat-l">Day Streak 🔥</span>
+    </div>
+    <div class="c-stat-sep"></div>
+    <div class="c-stat">
+      <span class="c-stat-n">{{ modules.length }}</span>
+      <span class="c-stat-l">Total Modules</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE GRID ===== -->
+<div class="modules-section">
+  <div class="course-container">
+    <div class="modules-header">
+      <h2 class="modules-title">Your Curriculum</h2>
+      <p class="modules-sub">{{ totalLessons }} lessons across {{ modules.length }} modules</p>
+    </div>
+    <div class="modules-grid">
+      @for (mod of modules; track mod.id) {
+        <div class="module-card" [class]="'module-card--' + getModuleStatus(mod)">
+          <div class="module-card-top">
+            <div class="module-icon-wrap">{{ mod.icon }}</div>
+            <div class="module-status-badge">
+              @switch (getModuleStatus(mod)) {
+                @case ('complete')    { <span class="status-badge badge-complete">✓ Complete</span> }
+                @case ('in-progress') { <span class="status-badge badge-progress">In Progress</span> }
+                @case ('locked')      { <span class="status-badge badge-locked">🔒 Locked</span> }
+                @default              { <span class="status-badge badge-available">Available</span> }
+              }
+            </div>
+          </div>
+
+          <div class="module-num">Module {{ mod.id }}</div>
+          <h3 class="module-name">{{ mod.title }}</h3>
+
+          <div class="module-progress-track">
+            <div class="module-progress-fill" [style.width.%]="mod.progress"></div>
+          </div>
+          <div class="module-meta-row">
+            <span class="module-meta-text">{{ mod.completedCount }}/{{ mod.lessons.length }} lessons</span>
+            <span class="module-meta-text">{{ mod.totalDuration }}</span>
+          </div>
+
+          @if (!mod.locked) {
+            <a [routerLink]="['/learn/lesson', mod.currentLessonId]" class="btn btn-sm module-cta"
+               [class.btn-primary]="getModuleStatus(mod) === 'in-progress'"
+               [class.btn-ghost]="getModuleStatus(mod) !== 'in-progress'">
+              @switch (getModuleStatus(mod)) {
+                @case ('complete')    { Review → }
+                @case ('in-progress') { Continue → }
+                @default              { Start → }
+              }
+            </a>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

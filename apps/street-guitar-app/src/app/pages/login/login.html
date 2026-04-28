@@ -1,0 +1,90 @@
+<div class="auth-page">
+  <div class="auth-glow"></div>
+
+  <header class="auth-header">
+    <a routerLink="/" class="nav-logo">
+      <span>STREET</span><span class="accent">GUITAR</span>
+    </a>
+  </header>
+
+  <main class="auth-main">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h1 class="auth-title">Welcome back</h1>
+        <p class="auth-sub">Sign in to continue learning</p>
+      </div>
+
+      <div class="auth-demo-tip">
+        <span class="demo-icon">💡</span>
+        <span>Any credentials work. Use an email with <strong>admin</strong> in it for admin access.</span>
+      </div>
+
+      @if (error()) {
+        <div class="auth-error">
+          <span>⚠</span> {{ error() }}
+        </div>
+      }
+
+      <form class="auth-form" [class.form-loading]="loading()"
+            (submit)="$event.preventDefault(); submit(emailInput, passwordInput)">
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            #emailInput
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            [disabled]="loading()"
+          />
+        </div>
+
+        <div class="field">
+          <div class="field-label-row">
+            <label for="password">Password</label>
+            <a routerLink="/forgot-password" class="forgot-link">Forgot password?</a>
+          </div>
+          <div class="password-wrap">
+            <input
+              #passwordInput
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              [disabled]="loading()"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="showPassword.set(!showPassword())"
+              [disabled]="loading()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+              {{ showPassword() ? '🙈' : '👁' }}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block auth-submit"
+                [class.is-loading]="loading()" [disabled]="loading()">
+          @if (loading()) {
+            <span class="btn-spinner"></span>
+            <span>Signing in...</span>
+          } @else {
+            Sign In →
+          }
+        </button>
+
+        @if (loading()) {
+          <p class="loading-hint">Hang tight, authenticating…</p>
+        }
+      </form>
+
+      <div class="auth-divider"><span>New here?</span></div>
+
+      <p class="auth-signup-note">
+        Get access to the Street Guitar online course
+        on the <a routerLink="/" fragment="pricing">pricing page</a>.
+      </p>
+    </div>
+  </main>
+</div>

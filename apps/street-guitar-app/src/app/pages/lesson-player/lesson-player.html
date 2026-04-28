@@ -1,0 +1,127 @@
+<!-- ===== PLAYER NAV ===== -->
+<nav class="p-nav">
+  <div class="p-nav-inner">
+    <a routerLink="/learn" class="p-back-link">← Course Home</a>
+    <div class="nav-logo p-nav-logo">
+      <span>STREET</span><span class="accent">GUITAR</span>
+    </div>
+    <div class="p-nav-right">
+      <div class="user-avatar-chip">{{ auth.user()!.name[0] }}</div>
+      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== PLAYER LAYOUT ===== -->
+<div class="player-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="curriculum-sidebar">
+    <div class="sidebar-header">Curriculum</div>
+    <div class="sidebar-scroll">
+      @for (mod of curriculum; track mod.id) {
+        <div class="sidebar-module">
+          <button class="sidebar-module-btn" (click)="toggleModule(mod.id)" [disabled]="mod.locked">
+            <span class="sm-icon">{{ mod.icon }}</span>
+            <span class="sm-title">{{ mod.title }}</span>
+            <span class="sm-chevron" [class.open]="isModuleOpen(mod.id)">›</span>
+          </button>
+
+          @if (!mod.locked && isModuleOpen(mod.id)) {
+            <div class="sidebar-lessons">
+              @for (lesson of mod.lessons; track lesson.id) {
+                <button
+                  class="sidebar-lesson-btn"
+                  [class.active]="lesson.id === currentLessonId()"
+                  [class.completed]="lesson.completed"
+                  (click)="goTo(lesson.id)">
+                  <span class="sl-status">
+                    @if (lesson.completed) { <span class="sl-check">✓</span> }
+                    @else if (lesson.id === currentLessonId()) { <span class="sl-play">▶</span> }
+                    @else { <span class="sl-dot">○</span> }
+                  </span>
+                  <span class="sl-title">{{ lesson.title }}</span>
+                  <span class="sl-dur">{{ lesson.duration }}</span>
+                </button>
+              }
+            </div>
+          }
+
+          @if (mod.locked) {
+            <div class="sidebar-locked-msg">🔒 Complete previous modules to unlock</div>
+          }
+        </div>
+      }
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="player-main">
+
+    <!-- VIDEO PLAYER -->
+    <div class="video-wrap">
+      <div class="video-player" (click)="isPlaying.set(!isPlaying())">
+        @if (!isPlaying()) {
+          <div class="video-overlay">
+            <button class="play-btn" aria-label="Play">
+              <span class="play-icon">▶</span>
+            </button>
+            <p class="video-overlay-title">{{ currentLesson().title }}</p>
+          </div>
+        } @else {
+          <div class="video-playing-state">
+            <div class="playing-indicator">
+              <span></span><span></span><span></span>
+            </div>
+            <p class="video-playing-title">{{ currentLesson().title }}</p>
+          </div>
+        }
+        <div class="video-gradient-bottom"></div>
+      </div>
+      <div class="video-controls">
+        <div class="vc-progress">
+          <div class="vc-fill" [style.width]="isPlaying() ? '18%' : '0%'"></div>
+        </div>
+        <div class="vc-time">
+          {{ isPlaying() ? '2:08' : '0:00' }} / {{ currentLesson().duration }}
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSON INFO -->
+    <div class="lesson-info">
+      <div class="lesson-breadcrumb">
+        {{ currentModule().title }}
+        &nbsp;·&nbsp;
+        Lesson {{ currentLessonIndex() + 1 }} of {{ currentModule().lessons.length }}
+      </div>
+      <h1 class="lesson-title">{{ currentLesson().title }}</h1>
+      <p class="lesson-desc">
+        In this lesson, David Dunavant walks you through <em>{{ currentLesson().title | lowercase }}</em>.
+        You'll build on what you've learned in previous lessons and develop real muscle memory
+        at a pace that works for you. Grab your guitar and let's get into it.
+      </p>
+
+      <div class="lesson-nav-row">
+        @if (prevLesson()) {
+          <button class="btn btn-ghost lesson-nav-btn" (click)="goTo(prevLesson()!.id)">
+            ← {{ prevLesson()!.title }}
+          </button>
+        } @else {
+          <div></div>
+        }
+        @if (nextLesson()) {
+          <button class="btn btn-primary lesson-nav-btn" (click)="goTo(nextLesson()!.id)">
+            {{ nextLesson()!.title }} →
+          </button>
+        }
+      </div>
+
+      <button class="btn-complete" [class.is-done]="currentLesson().completed">
+        @if (currentLesson().completed) { ✓ Lesson Complete }
+        @else { Mark as Complete }
+      </button>
+    </div>
+
+  </main>
+</div>

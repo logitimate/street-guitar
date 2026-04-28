@@ -1,0 +1,464 @@
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="nav-logo">
+      <span>STREET</span><span class="accent">GUITAR</span>
+    </div>
+    <div class="nav-links">
+      <a href="#about">About David</a>
+      <a href="#paths">Lessons</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+    </div>
+    @if (auth.isLoggedIn()) {
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin" class="btn btn-ghost btn-sm">Admin</a>
+      }
+      <a routerLink="/learn" class="btn btn-ghost btn-sm">My Course</a>
+      <div class="nav-user-area">
+        <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
+        <span class="nav-uname">{{ auth.user()!.name.split(' ')[0] }}</span>
+        <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+      </div>
+    } @else {
+      <a routerLink="/login" class="btn btn-ghost btn-sm">Sign In</a>
+      <a href="#contact" class="btn btn-primary">Free First Lesson</a>
+    }
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+  <div class="hero-noise"></div>
+  <div class="container hero-layout">
+    <div class="hero-left">
+      <p class="eyebrow">Guitar Lessons with David Dunavant &bull; Little Rock, AR</p>
+      <h1 class="hero-heading">
+        <span class="h-learn">LEARN</span>
+        <span class="h-street">STREET</span>
+        <span class="h-guitar">GUITAR</span>
+      </h1>
+      <p class="hero-tagline">Real music. No fluff.</p>
+      <p class="hero-body">
+        Learn guitar the way it was meant to be played — raw, authentic, and personal.
+        Work 1-on-1 with David Dunavant in Little Rock, or follow his Street Guitar
+        curriculum online at your own pace.
+      </p>
+      <div class="hero-actions">
+        <a href="#paths" class="btn btn-primary btn-lg">Find Your Path</a>
+        <a href="#how-it-works" class="btn btn-ghost btn-lg">How It Works ↓</a>
+      </div>
+      <div class="hero-phone-row">
+        <span>Call David:</span>
+        <a href="tel:5012911171">(501) 291-1171</a>
+      </div>
+    </div>
+
+    <div class="hero-right" aria-hidden="true">
+      <div class="hero-photo-frame">
+        <img
+          src="david-dunavant.png"
+          alt="David Dunavant"
+          class="hero-photo"
+        />
+      </div>
+      <div class="hero-float-tag tag-1">
+        <span class="ft-n">27</span>
+        <span class="ft-l">Years Teaching</span>
+      </div>
+      <div class="hero-float-tag tag-2">
+        <span class="ft-n">FREE</span>
+        <span class="ft-l">First Lesson</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ===== STATS STRIP ===== -->
+<div class="stats-strip">
+  <div class="container stats-inner">
+    <div class="stat-item">
+      <span class="stat-n">500+</span>
+      <span class="stat-l">Students Taught</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="stat-n">27</span>
+      <span class="stat-l">Years Experience</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="stat-n">2</span>
+      <span class="stat-l">Ways to Learn</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="stat-n">FREE</span>
+      <span class="stat-l">First Lesson</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <p class="eyebrow">The Process</p>
+    <h2 class="section-h">Three Steps to <span class="accent">Real Music</span></h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-num">01</span>
+        <span class="step-icon">📞</span>
+        <h3>Free Consultation</h3>
+        <p>A no-pressure conversation with David about your goals, experience, and what music means to you. Zero commitment required.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02</span>
+        <span class="step-icon">🎯</span>
+        <h3>Your Personal Plan</h3>
+        <p>Get a curriculum built around your style, pace, and goals — not some generic lesson plan from a book.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03</span>
+        <span class="step-icon">🎸</span>
+        <h3>Play Real Music</h3>
+        <p>Start making actual music from lesson one. We fast-track what matters and cut everything that doesn't.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CHOOSE YOUR PATH ===== -->
+<section class="section section-alt" id="paths">
+  <div class="container">
+    <p class="eyebrow center">Choose Your Path</p>
+    <h2 class="section-h center">Two Ways to Learn <span class="accent">Street Guitar</span></h2>
+    <div class="paths-grid">
+
+      <div class="path-card path-inperson">
+        <span class="path-badge">In-Person — Waitlist Open</span>
+        <div class="path-photo-wrap">
+          <img
+            src="https://lirp.cdn-website.com/0683cd73/dms3rep/multi/opt/david_dunavant_guitar_lessons_with_student_little_rock_ar-1920w.png"
+            alt="David Dunavant teaching a student"
+            class="path-photo"
+          />
+        </div>
+        <div class="path-content">
+          <h3>Private Lessons with David</h3>
+          <p>Work directly with David Dunavant one-on-one in Little Rock, AR. Spots are limited — join the waitlist to be first in line when availability opens.</p>
+          <ul class="path-features">
+            <li>Live 1:1 sessions with David Dunavant</li>
+            <li>Fully personalized curriculum</li>
+            <li>Flexible scheduling, no contracts</li>
+            <li>Guitar repair &amp; setup access</li>
+            <li>First lesson completely free</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Join the Waitlist →</a>
+        </div>
+      </div>
+
+      <div class="path-card path-online">
+        <span class="path-badge path-badge-online">Online — Available Now</span>
+        <div class="path-online-visual">
+          <div class="online-visual-inner">
+            <span class="online-icon">💻</span>
+            <div class="online-label">
+              <span class="ol-title">Street Guitar</span>
+              <span class="ol-sub">Online Curriculum</span>
+            </div>
+          </div>
+        </div>
+        <div class="path-content">
+          <h3>Self-Paced Online Course</h3>
+          <p>Follow David Dunavant's proven Street Guitar curriculum at your own pace, from anywhere. Pre-recorded lessons built on the same method taught in-person.</p>
+          <ul class="path-features">
+            <li>Pre-recorded lesson library</li>
+            <li>Based on the Street Guitar book curriculum</li>
+            <li>Learn on your own schedule</li>
+            <li>All skill levels welcome</li>
+            <li>Cancel anytime</li>
+          </ul>
+          <a routerLink="/learn" class="btn btn-ghost">Get Started →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT DAVID ===== -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-photo-frame">
+          <img
+            src="david-dunavant.png"
+            alt="David Dunavant"
+            class="about-photo"
+          />
+        </div>
+        <div class="about-accent-card">
+          <p class="aac-title">Guitar Wars</p>
+          <p class="aac-sub">Nonprofit Founder</p>
+        </div>
+      </div>
+      <div class="about-copy">
+        <p class="eyebrow">The Creator</p>
+        <h2 class="section-h">David Dunavant &amp; the <span class="accent">Street Guitar Method</span></h2>
+        <p class="body-text">
+          David Dunavant has spent 27 years teaching guitar with a single focus: getting students to play
+          real music, fast. As the author and creator of the Street Guitar curriculum, David built a method
+          that cuts through the noise — practical, authentic, and designed for people who actually want to play.
+        </p>
+        <ul class="cred-list">
+          <li>
+            <span class="cred-icon">🎓</span>
+            <span>Music degree, Univ. of Arkansas + Master's, Bowling Green State University</span>
+          </li>
+          <li>
+            <span class="cred-icon">📖</span>
+            <span>Author &amp; creator of the Street Guitar curriculum</span>
+          </li>
+          <li>
+            <span class="cred-icon">🏆</span>
+            <span>Founder of Guitar Wars — bringing live music to communities across Arkansas</span>
+          </li>
+          <li>
+            <span class="cred-icon">📰</span>
+            <span>Featured in Arkansas Money &amp; Politics</span>
+          </li>
+          <li>
+            <span class="cred-icon">🔧</span>
+            <span>Professional guitar repair and setup services available</span>
+          </li>
+        </ul>
+        <a href="#contact" class="btn btn-primary">Learn With David</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY STREET GUITAR ===== -->
+<section class="section section-alt" id="lessons">
+  <div class="container">
+    <p class="eyebrow">Why Us</p>
+    <h2 class="section-h">Guitar Lessons Like <span class="accent">No Other</span></h2>
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <span class="benefit-icon">🎵</span>
+        <h3>Songs You Love</h3>
+        <p>We start with music that makes you want to practice every day — not boring exercises that kill motivation.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">👤</span>
+        <h3>Private 1-on-1</h3>
+        <p>100% private instruction. Every session is focused entirely on your progress, your sound, your goals.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">📅</span>
+        <h3>No Contracts</h3>
+        <p>Flexible scheduling with zero long-term commitments. Stay because you love it, not because you have to.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🚀</span>
+        <h3>Fast Results</h3>
+        <p>The Street Guitar Method is built for rapid progress. Most students are playing full songs within weeks.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🎸</span>
+        <h3>All Styles</h3>
+        <p>Rock, blues, country, metal, acoustic — whatever your style, David teaches it with depth and authenticity.</p>
+      </div>
+      <div class="benefit-card">
+        <span class="benefit-icon">🔧</span>
+        <h3>Gear Support</h3>
+        <p>Professional guitar repair and setup included. Your instrument will play exactly the way it should.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow center">Testimonials</p>
+    <h2 class="section-h center">What Students Say</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <span class="big-quote">"</span>
+        <p>David's approach completely changed how I think about the guitar. I went from struggling with basic chords to playing full songs in two months.</p>
+        <div class="t-author">
+          <div class="t-avatar">M</div>
+          <div>
+            <p class="t-name">Mike R.</p>
+            <p class="t-label">Student, 2 years</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="big-quote">"</span>
+        <p>The Street Guitar method is unlike anything I've tried. No boring scales — just real music from day one. Highly recommend for any level.</p>
+        <div class="t-author">
+          <div class="t-avatar">S</div>
+          <div>
+            <p class="t-name">Sarah K.</p>
+            <p class="t-label">Beginner → Intermediate</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <span class="big-quote">"</span>
+        <p>I tried three other instructors before David. The difference is night and day. He genuinely cares about where you're going musically.</p>
+        <div class="t-author">
+          <div class="t-avatar">T</div>
+          <div>
+            <p class="t-name">Tom W.</p>
+            <p class="t-label">Advanced student</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="section section-alt" id="pricing">
+  <div class="container">
+    <p class="eyebrow center">Pricing</p>
+    <h2 class="section-h center">Simple. <span class="accent">Transparent.</span></h2>
+    <div class="pricing-grid">
+
+      <div class="pricing-card">
+        <div class="pricing-top-bar"></div>
+        <p class="pricing-tag-label">IN-PERSON — WAITLIST</p>
+        <h3 class="pricing-title">Private Lessons</h3>
+        <div class="pricing-amount">
+          <span class="p-big">$XX</span>
+          <span class="p-small">/ month</span>
+        </div>
+        <ul class="pricing-features">
+          <li>Four 30-minute private sessions</li>
+          <li>1:1 with David Dunavant</li>
+          <li>Personalized curriculum</li>
+          <li>Guitar repair access</li>
+          <li>No contracts — cancel anytime</li>
+          <li>First lesson completely free</li>
+        </ul>
+        <a href="#contact" class="btn btn-primary btn-lg btn-block">Join the Waitlist →</a>
+        <p class="pricing-fine">Spots are limited. First lesson free when you get in.</p>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-top-bar pricing-top-muted"></div>
+        <p class="pricing-tag-label pricing-tag-muted">ONLINE — AVAILABLE NOW</p>
+        <h3 class="pricing-title">Street Guitar Course</h3>
+        <div class="pricing-amount">
+          <span class="p-big">$XX</span>
+          <span class="p-small">/ month</span>
+        </div>
+        <ul class="pricing-features">
+          <li>Full pre-recorded lesson library</li>
+          <li>Street Guitar book curriculum</li>
+          <li>Self-paced — learn anywhere</li>
+          <li>All skill levels covered</li>
+          <li>New content added regularly</li>
+          <li>Cancel anytime</li>
+        </ul>
+        <a routerLink="/learn" class="btn btn-ghost btn-lg btn-block">Get Started →</a>
+        <p class="pricing-fine">Start learning today. No waitlist required.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p class="eyebrow">Get Started</p>
+        <h2 class="section-h">Ready to Play <span class="accent">Real Guitar?</span></h2>
+        <p class="body-text">
+          Join the waitlist for in-person lessons with David Dunavant, or get started
+          with the online course today. No commitment, no risk — just music.
+        </p>
+        <div class="contact-ways">
+          <a href="tel:5012911171" class="contact-way">
+            <span class="cw-icon">📞</span>
+            <div>
+              <p class="cw-label">Call David Anytime</p>
+              <p class="cw-value">(501) 291-1171</p>
+            </div>
+          </a>
+          <div class="contact-way">
+            <span class="cw-icon">📍</span>
+            <div>
+              <p class="cw-label">Location</p>
+              <p class="cw-value">Little Rock, AR</p>
+            </div>
+          </div>
+        </div>
+        <div class="socials">
+          <a href="#" class="social-pill">Facebook</a>
+          <a href="#" class="social-pill">Instagram</a>
+          <a href="#" class="social-pill">YouTube</a>
+          <a href="#" class="social-pill">TikTok</a>
+        </div>
+      </div>
+
+      <div class="contact-form-wrap">
+        <form class="contact-form">
+          <h3>Send a Message</h3>
+          <div class="field">
+            <label for="name">Your Name</label>
+            <input id="name" type="text" placeholder="John Smith" />
+          </div>
+          <div class="field">
+            <label for="contact-input">Phone or Email</label>
+            <input id="contact-input" type="text" placeholder="(555) 555-5555 or email@example.com" />
+          </div>
+          <div class="field">
+            <label for="lesson-type">I'm interested in</label>
+            <select id="lesson-type">
+              <option value="">Select a path...</option>
+              <option value="inperson">In-Person Lessons — Waitlist</option>
+              <option value="online">Online Course — Start Now</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Tell us about yourself</label>
+            <textarea id="message" placeholder="Experience level, genre interests, goals..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="nav-logo">
+        <span>STREET</span><span class="accent">GUITAR</span>
+      </div>
+      <p class="footer-tagline">Created by David Dunavant &bull; Little Rock, AR</p>
+      <div class="footer-nav">
+        <a href="#about">About David</a>
+        <a href="#paths">Lessons</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <p class="footer-copy">&copy; 2024 Street Guitar by David Dunavant. All rights reserved.</p>
+  </div>
+</footer>

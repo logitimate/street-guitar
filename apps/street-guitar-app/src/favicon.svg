@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="7" fill="#0a0a0a"/>
+  <!-- Neck -->
+  <rect x="14" y="2" width="4" height="13" rx="1" fill="#ff6b35"/>
+  <!-- Headstock -->
+  <rect x="11" y="1" width="10" height="5" rx="2" fill="#cc4a1a"/>
+  <!-- Upper bout -->
+  <ellipse cx="16" cy="20" rx="6" ry="5" fill="#ff6b35"/>
+  <!-- Lower bout -->
+  <ellipse cx="16" cy="27" rx="8" ry="5" fill="#ff6b35"/>
+  <!-- Soundhole -->
+  <circle cx="16" cy="25" r="2.2" fill="#0a0a0a" opacity="0.55"/>
+</svg>

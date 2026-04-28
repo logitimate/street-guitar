@@ -1,0 +1,244 @@
+<!-- ===== ADMIN NAV ===== -->
+<nav class="a-nav">
+  <div class="a-nav-inner">
+    <div class="a-nav-left">
+      <a routerLink="/" class="nav-logo a-logo">
+        <span>STREET</span><span class="accent">GUITAR</span>
+      </a>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="a-nav-links">
+      <a routerLink="/admin"  class="a-nav-link active">Dashboard</a>
+      <a routerLink="/learn"  class="a-nav-link">View as Student</a>
+    </div>
+    <div class="a-nav-user">
+      <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
+      <span class="nav-uname">{{ auth.user()!.name.split(' ')[0] }}</span>
+      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="a-page">
+
+  <!-- Page header -->
+  <div class="a-page-header">
+    <div>
+      <h1 class="a-page-title">Dashboard</h1>
+      <p class="a-page-sub">Street Guitar · {{ today | date:'MMMM yyyy' }}</p>
+    </div>
+    <div class="a-header-right">
+      <div class="view-toggle">
+        <button class="toggle-btn" [class.active]="selectedView() === 'all'"      (click)="setView('all')">All</button>
+        <button class="toggle-btn" [class.active]="selectedView() === 'online'"   (click)="setView('online')">Online</button>
+        <button class="toggle-btn" [class.active]="selectedView() === 'inperson'" (click)="setView('inperson')">In-Person</button>
+      </div>
+      <span class="last-updated">Last updated: just now</span>
+    </div>
+  </div>
+
+  <!-- ===== KPI CARDS ===== -->
+  <div class="kpi-grid">
+
+    <div class="kpi-card kpi-primary">
+      <div class="kpi-label">Monthly Recurring Revenue</div>
+      <div class="kpi-value">{{ currentMetrics().mrr | currency:'USD':'symbol':'1.0-0' }}</div>
+      @if (currentMetrics().mrrGrowth !== null) {
+        <div class="kpi-change kpi-up">↑ {{ currentMetrics().mrrGrowth }}% vs last month</div>
+      } @else {
+        <div class="kpi-sub">Flat vs last month</div>
+      }
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Annual Recurring Revenue</div>
+      <div class="kpi-value">{{ currentMetrics().arr | currency:'USD':'symbol':'1.0-0' }}</div>
+      <div class="kpi-sub">MRR × 12</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Projected Year-End Revenue</div>
+      <div class="kpi-value">{{ currentMetrics().projectedYearEnd | currency:'USD':'symbol':'1.0-0' }}</div>
+      <div class="kpi-sub kpi-up">Based on current growth rate</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Active Subscribers</div>
+      <div class="kpi-value">{{ currentMetrics().totalSubscribers }}</div>
+      @if (currentMetrics().subscriberGrowth > 0) {
+        <div class="kpi-change kpi-up">↑ {{ currentMetrics().subscriberGrowth }} net new this month</div>
+      } @else {
+        <div class="kpi-sub">No new subscribers this month</div>
+      }
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Monthly Churn Rate</div>
+      <div class="kpi-value">{{ currentMetrics().churnRate | percent:'1.1-1' }}</div>
+      @if (currentMetrics().churnedThisMonth > 0) {
+        <div class="kpi-change kpi-down">{{ currentMetrics().churnedThisMonth }} cancelled this month</div>
+      } @else {
+        <div class="kpi-change kpi-up">No cancellations this month</div>
+      }
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">Avg. Revenue Per User</div>
+      <div class="kpi-value">{{ currentMetrics().arpu | currency:'USD':'symbol':'1.2-2' }}</div>
+      <div class="kpi-sub">LTV est. {{ currentMetrics().ltv | currency:'USD':'symbol':'1.0-0' }}</div>
+    </div>
+
+  </div>
+
+  <!-- ===== CHARTS ROW ===== -->
+  <div class="charts-row">
+
+    <!-- Revenue Bar Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2 class="chart-title">Monthly Revenue</h2>
+        <span class="chart-badge">Last 8 months</span>
+      </div>
+      <div class="bar-chart-wrap">
+        <div class="bar-chart">
+          @for (month of currentRevenue(); track month.month; let last = $last) {
+            <div class="bar-col">
+              <div class="bar-value">{{ month.revenue | currency:'USD':'symbol':'1.0-0' }}</div>
+              <div class="bar-outer">
+                <div
+                  class="bar-fill"
+                  [class.bar-current]="last"
+                  [style.height.%]="barHeightPct(month.revenue)">
+                </div>
+              </div>
+              <div class="bar-label">{{ month.month }}</div>
+            </div>
+          }
+        </div>
+        <div class="bar-chart-baseline"></div>
+      </div>
+    </div>
+
+    <!-- Subscriber Breakdown -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h2 class="chart-title">Subscriber Breakdown</h2>
+        <span class="chart-badge">{{ currentMetrics().totalSubscribers }} total</span>
+      </div>
+
+      @if (selectedView() === 'all') {
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <div class="breakdown-meta">
+              <span class="breakdown-label">Online Course</span>
+              <span class="breakdown-count">47</span>
+            </div>
+            <div class="breakdown-track">
+              <div class="breakdown-fill fill-online" [style.width.%]="onlineShare * 100"></div>
+            </div>
+            <span class="breakdown-pct">{{ onlineShare | percent:'1.0-0' }}</span>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-meta">
+              <span class="breakdown-label">In-Person</span>
+              <span class="breakdown-count">12</span>
+            </div>
+            <div class="breakdown-track">
+              <div class="breakdown-fill fill-inperson" [style.width.%]="inPersonShare * 100"></div>
+            </div>
+            <span class="breakdown-pct">{{ inPersonShare | percent:'1.0-0' }}</span>
+          </div>
+        </div>
+      } @else {
+        <div class="breakdown-list">
+          <div class="breakdown-item">
+            <div class="breakdown-meta">
+              <span class="breakdown-label">{{ selectedView() === 'online' ? 'Online Course' : 'In-Person' }}</span>
+              <span class="breakdown-count">{{ currentMetrics().totalSubscribers }}</span>
+            </div>
+            <div class="breakdown-track">
+              <div class="breakdown-fill"
+                [class.fill-online]="selectedView() === 'online'"
+                [class.fill-inperson]="selectedView() === 'inperson'"
+                style="width:100%">
+              </div>
+            </div>
+            <span class="breakdown-pct">100%</span>
+          </div>
+        </div>
+      }
+
+      <div class="breakdown-divider"></div>
+
+      <div class="pipeline-section">
+        <h3 class="pipeline-title">Pipeline</h3>
+        @if (currentMetrics().waitlist !== undefined) {
+          <div class="pipeline-row">
+            <span class="pipeline-label">In-Person Waitlist</span>
+            <span class="pipeline-value accent">{{ currentMetrics().waitlist }}</span>
+          </div>
+        }
+        @if (currentMetrics().trialConversion !== undefined) {
+          <div class="pipeline-row">
+            <span class="pipeline-label">Trial → Paid Conversion</span>
+            <span class="pipeline-value">{{ currentMetrics().trialConversion | percent:'1.0-0' }}</span>
+          </div>
+        }
+        <div class="pipeline-row">
+          <span class="pipeline-label">Churned This Month</span>
+          <span class="pipeline-value churn">{{ currentMetrics().churnedThisMonth }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== RECENT ENROLLMENTS ===== -->
+  <div class="table-card">
+    <div class="chart-header">
+      <h2 class="chart-title">Recent Enrollments</h2>
+      <span class="chart-badge">April 2026</span>
+    </div>
+    <div class="table-wrap">
+      <table class="enroll-table">
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of currentEnrollments(); track row.name) {
+            <tr>
+              <td class="td-name">
+                <div class="student-chip">
+                  <div class="student-initial">{{ row.name[0] }}</div>
+                  {{ row.name }}
+                </div>
+              </td>
+              <td>
+                <span class="type-pill" [class.pill-online]="row.type === 'Online'"
+                                        [class.pill-inperson]="row.type === 'In-Person'">
+                  {{ row.type }}
+                </span>
+              </td>
+              <td class="td-muted">{{ row.date }}</td>
+              <td class="td-amount">{{ row.amount | currency:'USD':'symbol':'1.0-0' }}</td>
+              <td>
+                <span class="status-dot" [class.dot-active]="row.status === 'Active'"
+                                         [class.dot-cancelled]="row.status === 'Cancelled'">
+                  {{ row.status }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
