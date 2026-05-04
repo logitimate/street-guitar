@@ -24,6 +24,9 @@ node_modules
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Firebase config — real values are in GitHub Secrets; see environment.template.ts
+apps/street-guitar-app/src/environments/environment.ts
+
 # misc
 /.sass-cache
 /connect.lock

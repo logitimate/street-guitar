@@ -25,7 +25,7 @@
       <p class="welcome-greeting">Welcome back, {{ auth.user()!.name.split(' ')[0] }} 👋</p>
       <h1 class="welcome-title">Keep the momentum going.</h1>
       <p class="welcome-sub">
-        Currently on: <strong>Module {{ currentModule.id }} — {{ currentModule.title }}</strong>
+        Currently on: <strong>Module {{ currentModule().id }} — {{ currentModule().title }}</strong>
       </p>
     </div>
     <div class="welcome-right">
@@ -34,16 +34,16 @@
           <svg viewBox="0 0 56 56" class="op-svg">
             <circle cx="28" cy="28" r="24" class="op-track"/>
             <circle cx="28" cy="28" r="24" class="op-fill"
-              [style.stroke-dashoffset]="150.8 - (150.8 * overallProgress / 100)"/>
+              [style.stroke-dashoffset]="150.8 - (150.8 * overallProgress() / 100)"/>
           </svg>
-          <span class="op-pct">{{ overallProgress }}%</span>
+          <span class="op-pct">{{ overallProgress() }}%</span>
         </div>
         <div class="op-info">
           <p class="op-label">Overall Progress</p>
-          <p class="op-detail">{{ totalLessonsComplete }} / {{ totalLessons }} lessons</p>
+          <p class="op-detail">{{ totalLessonsComplete() }} / {{ totalLessons }} lessons</p>
         </div>
       </div>
-      <a [routerLink]="['/learn/lesson', currentModule.currentLessonId]" class="btn btn-primary btn-lg">
+      <a [routerLink]="['/learn/lesson', currentModule().currentLessonId]" class="btn btn-primary btn-lg">
         Continue Learning →
       </a>
     </div>
@@ -59,7 +59,7 @@
     </div>
     <div class="c-stat-sep"></div>
     <div class="c-stat">
-      <span class="c-stat-n">{{ totalLessonsComplete }}</span>
+      <span class="c-stat-n">{{ totalLessonsComplete() }}</span>
       <span class="c-stat-l">Lessons Complete</span>
     </div>
     <div class="c-stat-sep"></div>
@@ -80,10 +80,10 @@
   <div class="course-container">
     <div class="modules-header">
       <h2 class="modules-title">Your Curriculum</h2>
-      <p class="modules-sub">{{ totalLessons }} lessons across {{ modules.length }} modules</p>
+      <p class="modules-sub">{{ totalLessons }} lessons across {{ modules().length }} modules</p>
     </div>
     <div class="modules-grid">
-      @for (mod of modules; track mod.id) {
+      @for (mod of modules(); track mod.id) {
         <div class="module-card" [class]="'module-card--' + getModuleStatus(mod)">
           <div class="module-card-top">
             <div class="module-icon-wrap">{{ mod.icon }}</div>

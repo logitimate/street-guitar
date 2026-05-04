@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CURRICULUM, Module } from '../curriculum-data';
 import { AuthService } from '../../services/auth.service';
@@ -20,29 +20,34 @@ export class CourseHome {
   auth = inject(AuthService);
   private router = inject(Router);
 
-  logout() {
-    this.auth.logout();
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 
-  modules: ModuleViewModel[] = CURRICULUM.map(mod => {
-    const completedCount = mod.lessons.filter(l => l.completed).length;
-    const progress = Math.round((completedCount / mod.lessons.length) * 100);
-    const currentLesson = mod.lessons.find(l => !l.completed) ?? mod.lessons[0];
-    return {
-      ...mod,
-      progress,
-      completedCount,
-      currentLessonId: currentLesson.id,
-      totalDuration: this.sumDuration(mod.lessons.map(l => l.duration)),
-    };
+  readonly totalLessons = CURRICULUM.reduce((n, m) => n + m.lessons.length, 0);
+
+  modules = computed<ModuleViewModel[]>(() => {
+    const progress = this.auth.progress();
+    return CURRICULUM.map(mod => {
+      const completedCount = mod.lessons.filter(l => !!progress[String(l.id)]).length;
+      const progressPct    = Math.round((completedCount / mod.lessons.length) * 100);
+      const currentLesson  = mod.lessons.find(l => !progress[String(l.id)]) ?? mod.lessons[mod.lessons.length - 1];
+      return {
+        ...mod,
+        progress: progressPct,
+        completedCount,
+        currentLessonId: currentLesson.id,
+        totalDuration: this.sumDuration(mod.lessons.map(l => l.duration)),
+      };
+    });
   });
 
-  totalLessonsComplete = this.modules.reduce((n, m) => n + m.completedCount, 0);
-  totalLessons = this.modules.reduce((n, m) => n + m.lessons.length, 0);
-  overallProgress = Math.round((this.totalLessonsComplete / this.totalLessons) * 100);
-
-  currentModule = this.modules.find(m => m.progress > 0 && m.progress < 100) ?? this.modules[0];
+  totalLessonsComplete = computed(() => this.modules().reduce((n, m) => n + m.completedCount, 0));
+  overallProgress      = computed(() => Math.round((this.totalLessonsComplete() / this.totalLessons) * 100));
+  currentModule        = computed(() =>
+    this.modules().find(m => m.progress > 0 && m.progress < 100) ?? this.modules()[0]
+  );
 
   private sumDuration(durations: string[]): string {
     const totalSec = durations.reduce((acc, d) => {
@@ -55,9 +60,9 @@ export class CourseHome {
   }
 
   getModuleStatus(mod: ModuleViewModel): string {
-    if (mod.locked) return 'locked';
+    if (mod.locked)           return 'locked';
     if (mod.progress === 100) return 'complete';
-    if (mod.progress > 0) return 'in-progress';
+    if (mod.progress > 0)     return 'in-progress';
     return 'available';
   }
 }

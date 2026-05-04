@@ -11,8 +11,8 @@ export class Home {
   auth = inject(AuthService);
   private router = inject(Router);
 
-  logout() {
-    this.auth.logout();
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 }

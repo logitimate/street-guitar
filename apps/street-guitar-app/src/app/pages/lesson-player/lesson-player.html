@@ -33,10 +33,10 @@
                 <button
                   class="sidebar-lesson-btn"
                   [class.active]="lesson.id === currentLessonId()"
-                  [class.completed]="lesson.completed"
+                  [class.completed]="isLessonCompleted(lesson.id)"
                   (click)="goTo(lesson.id)">
                   <span class="sl-status">
-                    @if (lesson.completed) { <span class="sl-check">✓</span> }
+                    @if (isLessonCompleted(lesson.id)) { <span class="sl-check">✓</span> }
                     @else if (lesson.id === currentLessonId()) { <span class="sl-play">▶</span> }
                     @else { <span class="sl-dot">○</span> }
                   </span>
@@ -117,8 +117,9 @@
         }
       </div>
 
-      <button class="btn-complete" [class.is-done]="currentLesson().completed">
-        @if (currentLesson().completed) { ✓ Lesson Complete }
+      <button class="btn-complete" [class.is-done]="isCurrentLessonComplete()"
+              (click)="markComplete()" [disabled]="isCurrentLessonComplete()">
+        @if (isCurrentLessonComplete()) { ✓ Lesson Complete }
         @else { Mark as Complete }
       </button>
     </div>

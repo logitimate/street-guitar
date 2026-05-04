@@ -13,36 +13,35 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink, LowerCasePipe],
 })
 export class LessonPlayer {
-  private route = inject(ActivatedRoute);
+  private route  = inject(ActivatedRoute);
   private router = inject(Router);
   auth = inject(AuthService);
 
-  logout() {
-    this.auth.logout();
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/login']);
   }
 
   curriculum = CURRICULUM;
-  isPlaying = signal(false);
-
+  isPlaying  = signal(false);
   openModules = signal<Set<number>>(new Set([1, 2]));
 
   currentLessonId = toSignal(
     this.route.params.pipe(map(p => +p['id'])),
-    { initialValue: 9 },
+    { initialValue: 1 },
   );
 
-  currentLesson = computed<Lesson>(() => {
-    return ALL_LESSONS.find(l => l.id === this.currentLessonId()) ?? ALL_LESSONS[0];
-  });
+  currentLesson = computed<Lesson>(() =>
+    ALL_LESSONS.find(l => l.id === this.currentLessonId()) ?? ALL_LESSONS[0]
+  );
 
-  currentModule = computed<Module>(() => {
-    return CURRICULUM.find(m => m.lessons.some(l => l.id === this.currentLessonId())) ?? CURRICULUM[0];
-  });
+  currentModule = computed<Module>(() =>
+    CURRICULUM.find(m => m.lessons.some(l => l.id === this.currentLessonId())) ?? CURRICULUM[0]
+  );
 
-  currentLessonIndex = computed(() => {
-    return this.currentModule().lessons.findIndex(l => l.id === this.currentLessonId());
-  });
+  currentLessonIndex = computed(() =>
+    this.currentModule().lessons.findIndex(l => l.id === this.currentLessonId())
+  );
 
   prevLesson = computed<Lesson | null>(() => {
     const idx = ALL_LESSONS.findIndex(l => l.id === this.currentLessonId());
@@ -53,6 +52,19 @@ export class LessonPlayer {
     const idx = ALL_LESSONS.findIndex(l => l.id === this.currentLessonId());
     return idx < ALL_LESSONS.length - 1 ? ALL_LESSONS[idx + 1] : null;
   });
+
+  isLessonCompleted(lessonId: number): boolean {
+    return !!this.auth.progress()[String(lessonId)];
+  }
+
+  isCurrentLessonComplete = computed(() =>
+    this.isLessonCompleted(this.currentLessonId())
+  );
+
+  async markComplete() {
+    if (this.isCurrentLessonComplete()) return;
+    await this.auth.markLessonComplete(this.currentLessonId());
+  }
 
   goTo(lessonId: number) {
     this.isPlaying.set(false);

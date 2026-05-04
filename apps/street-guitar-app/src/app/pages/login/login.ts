@@ -9,28 +9,27 @@ import { AuthService } from '../../services/auth.service';
   imports: [RouterLink],
 })
 export class Login {
+  private auth   = inject(AuthService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private auth = inject(AuthService);
+  private route  = inject(ActivatedRoute);
 
   loading = signal(false);
-  error = signal('');
-  showPassword = signal(false);
+  error   = signal('');
 
-  async submit(email: HTMLInputElement, password: HTMLInputElement) {
-    this.error.set('');
-    if (!email.value || !password.value) {
-      this.error.set('Please enter your email and password.');
-      return;
-    }
+  async signInWithGoogle() {
     this.loading.set(true);
-    const result = await this.auth.login(email.value, password.value);
-    this.loading.set(false);
-    if (result.success) {
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? 'learn';
-      this.router.navigate([`/${returnUrl}`]);
-    } else {
-      this.error.set(result.error ?? 'Something went wrong. Please try again.');
+    this.error.set('');
+    try {
+      await this.auth.signInWithGoogle();
+      const returnUrl = this.route.snapshot.queryParams['returnUrl'] ?? '/learn';
+      this.router.navigateByUrl(returnUrl);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : '';
+      const cancelled = msg.includes('popup-closed-by-user') ||
+                        msg.includes('cancelled-popup-request');
+      if (!cancelled) this.error.set('Sign-in failed. Please try again.');
+    } finally {
+      this.loading.set(false);
     }
   }
 }
