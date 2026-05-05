@@ -1,20 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { NxWelcome } from './nx-welcome';
+import { appConfig } from './app.config';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App, NxWelcome],
+      imports: [App],
+      providers: [appConfig.providers],
     }).compileComponents();
   });
 
-  it('should render title', async () => {
+  it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('should contain a router outlet', () => {
+    const fixture = TestBed.createComponent(App);
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome street-guitar-app',
-    );
+    expect(compiled.querySelector('router-outlet')).not.toBeNull();
   });
 });

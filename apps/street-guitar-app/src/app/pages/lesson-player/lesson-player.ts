@@ -88,7 +88,7 @@ export class LessonPlayer {
   toggleModule(modId: number) {
     this.openModules.update(set => {
       const next = new Set(set);
-      next.has(modId) ? next.delete(modId) : next.add(modId);
+      if (next.has(modId)) { next.delete(modId); } else { next.add(modId); }
       return next;
     });
   }
