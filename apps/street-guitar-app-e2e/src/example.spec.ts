@@ -11,7 +11,7 @@ test('home page loads and shows hero heading', async ({ page }) => {
 test('home page has navigation logo', async ({ page }) => {
   await page.goto('/');
 
-  const logo = page.locator('.nav-logo');
+  const logo = page.locator('nav .nav-logo');
   await expect(logo).toBeVisible();
   await expect(logo).toContainText('GUITAR');
 });
