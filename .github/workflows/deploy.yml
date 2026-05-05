@@ -25,31 +25,6 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Write environment file
-        env:
-          FIREBASE_API_KEY:             ${{ secrets.FIREBASE_API_KEY }}
-          FIREBASE_AUTH_DOMAIN:         ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-          FIREBASE_PROJECT_ID:          ${{ secrets.FIREBASE_PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET:      ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-          FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-          FIREBASE_APP_ID:              ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_MEASUREMENT_ID:      ${{ secrets.FIREBASE_MEASUREMENT_ID }}
-        run: |
-          mkdir -p apps/street-guitar-app/src/environments
-          node -e "
-            const fs = require('fs');
-            const e = process.env;
-            const missing = ['FIREBASE_API_KEY','FIREBASE_AUTH_DOMAIN','FIREBASE_PROJECT_ID','FIREBASE_STORAGE_BUCKET','FIREBASE_MESSAGING_SENDER_ID','FIREBASE_APP_ID','FIREBASE_MEASUREMENT_ID'].filter(k => !e[k]);
-            if (missing.length) { console.error('Missing secrets:', missing.join(', ')); process.exit(1); }
-            fs.writeFileSync(
-              'apps/street-guitar-app/src/environments/environment.ts',
-              'export const environment = {\n  firebase: {\n    apiKey: \"' + e.FIREBASE_API_KEY + '\",\n    authDomain: \"' + e.FIREBASE_AUTH_DOMAIN + '\",\n    projectId: \"' + e.FIREBASE_PROJECT_ID + '\",\n    storageBucket: \"' + e.FIREBASE_STORAGE_BUCKET + '\",\n    messagingSenderId: \"' + e.FIREBASE_MESSAGING_SENDER_ID + '\",\n    appId: \"' + e.FIREBASE_APP_ID + '\",\n    measurementId: \"' + e.FIREBASE_MEASUREMENT_ID + '\",\n  },\n};\n'
-            );
-            console.log('environment.ts written successfully');
-          "
-          echo "--- environment.ts contents (keys only) ---"
-          grep -o 'firebase\|apiKey\|authDomain\|projectId\|appId' apps/street-guitar-app/src/environments/environment.ts
-
       - name: Install dependencies
         run: npm ci
 

@@ -24,8 +24,7 @@ node_modules
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Firebase config — real values are in GitHub Secrets; see environment.template.ts
-apps/street-guitar-app/src/environments/environment.ts
+# environment.ts is committed — Firebase web config is public by design (security via Firestore rules)
 
 # Cloud Functions compiled output
 functions/lib/
