@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import { onCall, onRequest, HttpsError } from 'firebase-functions/v2/https';
+import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import Stripe from 'stripe';
 
@@ -17,51 +17,79 @@ const REFERRAL_CREDIT_CENTS  = 1000; // $10.00 USD
 
 // ─── createCheckoutSession ───────────────────────────────────────────────────
 
-export const createCheckoutSession = onCall(
-  { secrets: [stripeSecretKey, stripePriceId, referralCouponId, appUrl], cors: true },
-  async (request) => {
-    if (!request.auth) {
-      throw new HttpsError('unauthenticated', 'Must be signed in');
+export const createCheckoutSession = onRequest(
+  { secrets: [stripeSecretKey, stripePriceId, referralCouponId, appUrl] },
+  async (req, res) => {
+    // CORS — set on every response including preflight
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') {
+      res.status(204).send('');
+      return;
     }
 
-    const uid    = request.auth.uid;
-    const stripe = new Stripe(stripeSecretKey.value());
+    if (req.method !== 'POST') {
+      res.status(405).json({ error: 'Method not allowed' });
+      return;
+    }
 
-    const userRef  = db.doc(`users/${uid}`);
-    const userSnap = await userRef.get();
-    if (!userSnap.exists) throw new HttpsError('not-found', 'User not found');
-    const userData = userSnap.data()!;
+    // Verify Firebase ID token
+    const authHeader = req.headers['authorization'] ?? '';
+    if (!authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'Unauthenticated' });
+      return;
+    }
 
-    // Create Stripe customer on first checkout
-    let customerId: string = userData['stripeCustomerId'] ?? '';
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email:    userData['email'],
-        name:     userData['name'],
-        metadata: { uid },
+    let uid: string;
+    try {
+      const decoded = await admin.auth().verifyIdToken(authHeader.slice(7));
+      uid = decoded.uid;
+    } catch {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
+    try {
+      const stripe    = new Stripe(stripeSecretKey.value());
+      const userRef   = db.doc(`users/${uid}`);
+      const userSnap  = await userRef.get();
+      if (!userSnap.exists) { res.status(404).json({ error: 'User not found' }); return; }
+      const userData  = userSnap.data()!;
+
+      let customerId: string = userData['stripeCustomerId'] ?? '';
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email:    userData['email'],
+          name:     userData['name'],
+          metadata: { uid },
+        });
+        customerId = customer.id;
+        await userRef.update({ stripeCustomerId: customerId });
+      }
+
+      const discounts: Stripe.Checkout.SessionCreateParams.Discount[] = [];
+      if (userData['referredBy'] && !userData['subscribed']) {
+        discounts.push({ coupon: referralCouponId.value() });
+      }
+
+      const base    = appUrl.value();
+      const session = await stripe.checkout.sessions.create({
+        customer:             customerId,
+        mode:                 'subscription',
+        payment_method_types: ['card'],
+        line_items:           [{ price: stripePriceId.value(), quantity: 1 }],
+        discounts:            discounts.length ? discounts : undefined,
+        success_url:          `${base}/#/learn?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url:           `${base}/#/`,
       });
-      customerId = customer.id;
-      await userRef.update({ stripeCustomerId: customerId });
+
+      res.json({ url: session.url });
+    } catch (err) {
+      console.error('createCheckoutSession error:', err);
+      res.status(500).json({ error: 'Internal error' });
     }
-
-    // Apply free-month coupon if user was referred and hasn't subscribed yet
-    const discounts: Stripe.Checkout.SessionCreateParams.Discount[] = [];
-    if (userData['referredBy'] && !userData['subscribed']) {
-      discounts.push({ coupon: referralCouponId.value() });
-    }
-
-    const base = appUrl.value();
-    const session = await stripe.checkout.sessions.create({
-      customer:             customerId,
-      mode:                 'subscription',
-      payment_method_types: ['card'],
-      line_items:           [{ price: stripePriceId.value(), quantity: 1 }],
-      discounts:            discounts.length ? discounts : undefined,
-      success_url:          `${base}/#/learn?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:           `${base}/#/`,
-    });
-
-    return { url: session.url };
   },
 );
 
