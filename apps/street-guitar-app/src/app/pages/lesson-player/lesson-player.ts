@@ -1,21 +1,24 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { LowerCasePipe } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ALL_LESSONS, CURRICULUM, Lesson, Module } from '../curriculum-data';
 import { AuthService } from '../../services/auth.service';
+import { LessonService } from '../../services/lesson.service';
 
 @Component({
   selector: 'app-lesson-player',
   templateUrl: './lesson-player.html',
   styleUrl: './lesson-player.css',
-  imports: [RouterLink, LowerCasePipe],
+  imports: [RouterLink],
 })
 export class LessonPlayer {
-  private route  = inject(ActivatedRoute);
-  private router = inject(Router);
-  auth = inject(AuthService);
+  private route     = inject(ActivatedRoute);
+  private router    = inject(Router);
+  private sanitizer = inject(DomSanitizer);
+  auth          = inject(AuthService);
+  lessonService = inject(LessonService);
 
   async logout() {
     await this.auth.logout();
@@ -23,7 +26,6 @@ export class LessonPlayer {
   }
 
   curriculum = CURRICULUM;
-  isPlaying  = signal(false);
   openModules = signal<Set<number>>(new Set([1, 2]));
 
   currentLessonId = toSignal(
@@ -53,6 +55,14 @@ export class LessonPlayer {
     return idx < ALL_LESSONS.length - 1 ? ALL_LESSONS[idx + 1] : null;
   });
 
+  youtubeUrl = computed<SafeResourceUrl | null>(() => {
+    const id = this.lessonService.getVideoId(this.currentLessonId());
+    if (!id) return null;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1&controls=1&iv_load_policy=3`,
+    );
+  });
+
   isLessonCompleted(lessonId: number): boolean {
     return !!this.auth.progress()[String(lessonId)];
   }
@@ -67,7 +77,6 @@ export class LessonPlayer {
   }
 
   goTo(lessonId: number) {
-    this.isPlaying.set(false);
     this.router.navigate(['/learn/lesson', lessonId]);
     this.openModules.update(set => {
       const mod = CURRICULUM.find(m => m.lessons.some(l => l.id === lessonId));
@@ -84,7 +93,5 @@ export class LessonPlayer {
     });
   }
 
-  isModuleOpen(modId: number) {
-    return this.openModules().has(modId);
-  }
+  isModuleOpen(modId: number) { return this.openModules().has(modId); }
 }

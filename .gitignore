@@ -27,6 +27,9 @@ node_modules
 # Firebase config — real values are in GitHub Secrets; see environment.template.ts
 apps/street-guitar-app/src/environments/environment.ts
 
+# Cloud Functions compiled output
+functions/lib/
+
 # misc
 /.sass-cache
 /connect.lock

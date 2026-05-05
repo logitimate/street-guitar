@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CURRICULUM, Module } from '../curriculum-data';
 import { AuthService } from '../../services/auth.service';
@@ -64,5 +64,24 @@ export class CourseHome {
     if (mod.progress === 100) return 'complete';
     if (mod.progress > 0)     return 'in-progress';
     return 'available';
+  }
+
+  referralLink = computed(() => {
+    const code = this.auth.user()?.referralCode;
+    if (!code) return '';
+    const base = window.location.origin + window.location.pathname;
+    return `${base}#/?ref=${code}`;
+  });
+
+  referralCount = computed(() => this.auth.user()?.referralCount ?? 0);
+
+  linkCopied = signal(false);
+
+  async copyReferralLink() {
+    const link = this.referralLink();
+    if (!link) return;
+    await navigator.clipboard.writeText(link);
+    this.linkCopied.set(true);
+    setTimeout(() => this.linkCopied.set(false), 2000);
   }
 }

@@ -75,6 +75,31 @@
   </div>
 </div>
 
+<!-- ===== REFERRAL BANNER ===== -->
+<div class="referral-section">
+  <div class="course-container">
+    <div class="referral-card">
+      <div class="referral-left">
+        <p class="referral-label">Refer a Friend</p>
+        <h3 class="referral-title">Give a free month. Earn $10 credit.</h3>
+        <p class="referral-sub">
+          Share your link — your friend gets their first month free, and you earn a $10
+          account credit after their first payment. Up to {{ 3 - referralCount() }} reward{{ 3 - referralCount() === 1 ? '' : 's' }} remaining.
+        </p>
+      </div>
+      <div class="referral-right">
+        <div class="referral-link-row">
+          <input class="referral-input" [value]="referralLink()" readonly (click)="$any($event.target).select()">
+          <button class="referral-copy-btn" [class.copied]="linkCopied()" (click)="copyReferralLink()">
+            {{ linkCopied() ? '✓ Copied' : 'Copy Link' }}
+          </button>
+        </div>
+        <p class="referral-count">{{ referralCount() }} / 3 referrals rewarded</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODULE GRID ===== -->
 <div class="modules-section">
   <div class="course-container">

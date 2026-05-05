@@ -15,6 +15,11 @@ export interface AppUser {
   role: 'admin' | 'student';
   subscribed: boolean;
   progress: Record<string, boolean>;
+  referralCode: string;
+  referredBy: string | null;
+  referralCount: number;
+  referralRewarded: boolean;
+  stripeCustomerId: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -77,16 +82,31 @@ export class AuthService {
       return { uid: fbUser.uid, ...snap.data() } as AppUser;
     }
 
+    const referredBy = this._getRefCode();
+
     const newUser = {
-      name:       fbUser.displayName ?? fbUser.email?.split('@')[0] ?? 'Student',
-      email:      fbUser.email ?? '',
-      photoURL:   fbUser.photoURL,
-      role:       'student' as const,
-      subscribed: false,
-      progress:   {},
-      createdAt:  serverTimestamp(),
+      name:             fbUser.displayName ?? fbUser.email?.split('@')[0] ?? 'Student',
+      email:            fbUser.email ?? '',
+      photoURL:         fbUser.photoURL,
+      role:             'student' as const,
+      subscribed:       false,
+      progress:         {},
+      referralCode:     fbUser.uid.slice(0, 8).toUpperCase(),
+      referredBy:       referredBy,
+      referralCount:    0,
+      referralRewarded: false,
+      stripeCustomerId: null,
+      createdAt:        serverTimestamp(),
     };
     await setDoc(ref, newUser);
     return { uid: fbUser.uid, ...newUser };
+  }
+
+  private _getRefCode(): string | null {
+    // Hash routing: window.location.hash = '#/login?ref=ABC123'
+    const hash = window.location.hash;
+    const qIdx = hash.indexOf('?');
+    if (qIdx === -1) return null;
+    return new URLSearchParams(hash.slice(qIdx + 1)).get('ref');
   }
 }

@@ -6,7 +6,7 @@
       <span>STREET</span><span class="accent">GUITAR</span>
     </div>
     <div class="p-nav-right">
-      <div class="user-avatar-chip">{{ auth.user()!.name[0] }}</div>
+      <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
       <button class="nav-signout-btn" (click)="logout()">Sign out</button>
     </div>
   </div>
@@ -58,34 +58,35 @@
   <!-- MAIN CONTENT -->
   <main class="player-main">
 
-    <!-- VIDEO PLAYER -->
+    <!-- VIDEO -->
     <div class="video-wrap">
-      <div class="video-player" (click)="isPlaying.set(!isPlaying())">
-        @if (!isPlaying()) {
-          <div class="video-overlay">
-            <button class="play-btn" aria-label="Play">
-              <span class="play-icon">▶</span>
-            </button>
-            <p class="video-overlay-title">{{ currentLesson().title }}</p>
-          </div>
-        } @else {
-          <div class="video-playing-state">
-            <div class="playing-indicator">
-              <span></span><span></span><span></span>
-            </div>
-            <p class="video-playing-title">{{ currentLesson().title }}</p>
-          </div>
-        }
-        <div class="video-gradient-bottom"></div>
-      </div>
-      <div class="video-controls">
-        <div class="vc-progress">
-          <div class="vc-fill" [style.width]="isPlaying() ? '18%' : '0%'"></div>
+      @if (youtubeUrl()) {
+        <iframe
+          class="yt-embed"
+          [src]="youtubeUrl()!"
+          [title]="currentLesson().title"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      } @else {
+        <div class="video-placeholder">
+          @if (lessonService.loaded()) {
+            @if (auth.isAdmin()) {
+              <div class="placeholder-inner">
+                <p class="placeholder-title">No video assigned</p>
+                <p class="placeholder-sub">
+                  Add a YouTube video ID in
+                  <a routerLink="/admin/content" class="placeholder-link">Admin → Content</a>
+                </p>
+              </div>
+            } @else {
+              <div class="placeholder-inner">
+                <p class="placeholder-title">Video coming soon</p>
+              </div>
+            }
+          }
         </div>
-        <div class="vc-time">
-          {{ isPlaying() ? '2:08' : '0:00' }} / {{ currentLesson().duration }}
-        </div>
-      </div>
+      }
     </div>
 
     <!-- LESSON INFO -->
@@ -96,11 +97,6 @@
         Lesson {{ currentLessonIndex() + 1 }} of {{ currentModule().lessons.length }}
       </div>
       <h1 class="lesson-title">{{ currentLesson().title }}</h1>
-      <p class="lesson-desc">
-        In this lesson, David Dunavant walks you through <em>{{ currentLesson().title | lowercase }}</em>.
-        You'll build on what you've learned in previous lessons and develop real muscle memory
-        at a pace that works for you. Grab your guitar and let's get into it.
-      </p>
 
       <div class="lesson-nav-row">
         @if (prevLesson()) {

@@ -1,0 +1,82 @@
+<!-- ===== ADMIN NAV ===== -->
+<nav class="a-nav">
+  <div class="a-nav-inner">
+    <div class="a-nav-left">
+      <a routerLink="/" class="nav-logo a-logo">
+        <span>STREET</span><span class="accent">GUITAR</span>
+      </a>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="a-nav-links">
+      <a routerLink="/admin"         class="a-nav-link">Dashboard</a>
+      <a routerLink="/admin/content" class="a-nav-link active">Content</a>
+      <a routerLink="/learn"         class="a-nav-link">View as Student</a>
+    </div>
+    <div class="a-nav-user">
+      <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
+      <span class="nav-uname">{{ auth.user()!.name.split(' ')[0] }}</span>
+      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<div class="a-page">
+
+  <div class="a-page-header">
+    <div>
+      <h1 class="a-page-title">Course Content</h1>
+      <p class="a-page-sub">Paste a YouTube URL or video ID for each lesson</p>
+    </div>
+  </div>
+
+  @for (mod of curriculum; track mod.id) {
+    <div class="content-module">
+      <div class="content-module-header">
+        <span class="cm-icon">{{ mod.icon }}</span>
+        <span class="cm-title">Module {{ mod.id }}: {{ mod.title }}</span>
+        <span class="cm-meta">{{ mod.lessons.length }} lessons</span>
+        @if (mod.locked) { <span class="cm-locked">🔒 Locked</span> }
+      </div>
+
+      <div class="content-lesson-list">
+        @for (lesson of mod.lessons; track lesson.id) {
+          <div class="content-row">
+            <div class="cr-info">
+              <span class="cr-num">{{ lesson.id }}</span>
+              <div class="cr-meta">
+                <span class="cr-title">{{ lesson.title }}</span>
+                <span class="cr-dur">{{ lesson.duration }}</span>
+              </div>
+              @if (lessonService.getVideoId(lesson.id)) {
+                <span class="cr-badge badge-set">● Video set</span>
+              } @else {
+                <span class="cr-badge badge-missing">○ No video</span>
+              }
+            </div>
+
+            <div class="cr-actions">
+              <input
+                class="cr-input"
+                type="text"
+                [value]="lessonService.getVideoId(lesson.id) ?? ''"
+                placeholder="https://youtube.com/watch?v=… or video ID"
+                #videoInput
+                (keydown.enter)="save(lesson.id, videoInput.value)" />
+              <button
+                class="cr-save-btn"
+                [class.is-saving]="savingLesson() === lesson.id"
+                [class.is-saved]="savedLesson() === lesson.id"
+                (click)="save(lesson.id, videoInput.value)">
+                @if (savingLesson() === lesson.id) { Saving… }
+                @else if (savedLesson() === lesson.id) { ✓ Saved }
+                @else { Save }
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</div>

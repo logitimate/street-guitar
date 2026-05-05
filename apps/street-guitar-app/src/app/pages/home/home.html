@@ -183,7 +183,9 @@
             <li>All skill levels welcome</li>
             <li>Cancel anytime</li>
           </ul>
-          <a routerLink="/learn" class="btn btn-ghost">Get Started →</a>
+          <button class="btn btn-ghost" (click)="startCheckout()" [disabled]="checkoutLoading">
+            {{ checkoutLoading ? 'Loading…' : 'Get Started →' }}
+          </button>
         </div>
       </div>
 
@@ -370,7 +372,12 @@
           <li>New content added regularly</li>
           <li>Cancel anytime</li>
         </ul>
-        <a routerLink="/learn" class="btn btn-ghost btn-lg btn-block">Get Started →</a>
+        <button class="btn btn-ghost btn-lg btn-block" (click)="startCheckout()" [disabled]="checkoutLoading">
+          {{ checkoutLoading ? 'Loading…' : 'Get Started →' }}
+        </button>
+        @if (checkoutError) {
+          <p class="checkout-error">{{ checkoutError }}</p>
+        }
         <p class="pricing-fine">Start learning today. No waitlist required.</p>
       </div>
 

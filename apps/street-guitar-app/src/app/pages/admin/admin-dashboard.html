@@ -8,8 +8,9 @@
       <span class="admin-badge">ADMIN</span>
     </div>
     <div class="a-nav-links">
-      <a routerLink="/admin"  class="a-nav-link active">Dashboard</a>
-      <a routerLink="/learn"  class="a-nav-link">View as Student</a>
+      <a routerLink="/admin"         class="a-nav-link active">Dashboard</a>
+      <a routerLink="/admin/content" class="a-nav-link">Content</a>
+      <a routerLink="/learn"         class="a-nav-link">View as Student</a>
     </div>
     <div class="a-nav-user">
       <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>

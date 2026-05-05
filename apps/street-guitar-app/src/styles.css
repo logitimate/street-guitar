@@ -581,6 +581,12 @@ input, textarea, button { font-family: inherit; }
   margin-top: 16px;
   letter-spacing: 0.3px;
 }
+.checkout-error {
+  text-align: center;
+  font-size: 13px;
+  color: #f87171;
+  margin-top: 12px;
+}
 
 /* ===== CONTACT ===== */
 .contact-grid {
