@@ -8,7 +8,7 @@ import { CheckoutService } from '../services/checkout.service';
   styleUrl: './account-modal.css',
 })
 export class AccountModal {
-  @Output() close = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<void>();
 
   auth     = inject(AuthService);
   checkout = inject(CheckoutService);
@@ -38,7 +38,7 @@ export class AccountModal {
   });
 
   @HostListener('document:keydown.escape')
-  onEscape() { this.close.emit(); }
+  onEscape() { this.closed.emit(); }
 
   async confirmCancelSubscription() {
     this.cancelling.set(true);

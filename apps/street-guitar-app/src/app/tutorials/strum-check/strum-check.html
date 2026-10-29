@@ -12,6 +12,8 @@
   }
 </div>
 
+<!-- Mouse-only shortcut: the START/STOP button below is the keyboard control -->
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 <div class="sc-cam" (click)="toggle()">
   <video #video playsinline muted></video>
   <canvas #dots></canvas>

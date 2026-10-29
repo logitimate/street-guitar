@@ -471,5 +471,5 @@
 </footer>
 
 @if (auth.isLoggedIn() && accountModal.isOpen()) {
-  <app-account-modal (close)="accountModal.close()" />
+  <app-account-modal (closed)="accountModal.close()" />
 }

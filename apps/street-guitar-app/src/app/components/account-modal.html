@@ -1,10 +1,12 @@
-<div class="am-backdrop" (click)="close.emit()">
-  <div class="am-card" (click)="$event.stopPropagation()">
+<!-- Mouse-only shortcut: Escape closes via the component's keydown listener -->
+<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+<div class="am-backdrop" (click)="$event.target === $event.currentTarget && closed.emit()">
+  <div class="am-card">
 
     <!-- Header -->
     <div class="am-header">
       <h2 class="am-title">My Account</h2>
-      <button class="am-close" (click)="close.emit()">✕</button>
+      <button class="am-close" (click)="closed.emit()">✕</button>
     </div>
 
     <!-- Profile -->
