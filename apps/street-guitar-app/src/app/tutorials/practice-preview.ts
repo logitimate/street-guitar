@@ -10,7 +10,7 @@ import { PracticeSection } from './practice-section';
     <nav class="nav" style="position: sticky">
       <div class="container nav-inner">
         <a routerLink="/" class="nav-logo">
-          <img class="nav-sign" src="street-guitar.png" alt="" />
+          <img class="nav-sign" src="street-guitar.svg" alt="" />
           <span>STREET</span><span class="accent">GUITAR</span>
         </a>
       </div>

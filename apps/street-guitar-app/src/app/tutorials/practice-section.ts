@@ -25,7 +25,7 @@ import { TUTORIALS, TutorialId } from './tutorials';
 
       @if (meta(); as m) {
         <header class="sg-sign">
-          <img class="sg-logo" src="street-guitar.png" alt="Street Guitar" />
+          <img class="sg-logo" src="street-guitar.svg" alt="Street Guitar" />
           <div>
             <div class="sg-eyebrow">{{ m.eyebrow }}</div>
             <h2>{{ m.title }}</h2>
