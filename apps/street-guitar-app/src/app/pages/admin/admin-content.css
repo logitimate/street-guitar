@@ -193,6 +193,13 @@
   .content-row    { flex-direction: column; align-items: flex-start; gap: 12px; }
   .cr-actions     { width: 100%; }
   .cr-input       { flex: 1; width: auto; }
-  .a-nav-links    { display: none; }
   .a-page         { padding: 24px 16px 60px; }
+}
+@media (max-width: 640px) {
+  /* links drop to their own scrollable row under the logo */
+  .a-nav-inner    { flex-wrap: wrap; height: auto; padding: 8px 16px 0; row-gap: 0; }
+  .a-nav-links    { order: 3; width: 100%; overflow-x: auto; padding: 10px 0 12px; white-space: nowrap; }
+  .content-row    { padding: 16px; }
+  .cr-info        { flex-wrap: wrap; gap: 8px 12px; width: 100%; }
+  .content-module-header { flex-wrap: wrap; gap: 6px 12px; }
 }

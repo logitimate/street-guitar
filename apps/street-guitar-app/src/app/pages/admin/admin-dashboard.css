@@ -370,11 +370,18 @@
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-  .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
-  .charts-row  { grid-template-columns: 1fr; }
+  .kpi-grid    { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .charts-row  { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 640px) {
-  .kpi-grid    { grid-template-columns: 1fr; }
-  .a-nav-links { display: none; }
+  .kpi-grid    { grid-template-columns: minmax(0, 1fr); }
+  /* links drop to their own scrollable row under the logo */
+  .a-nav-inner { flex-wrap: wrap; height: auto; padding: 8px 16px 0; row-gap: 0; }
+  .a-nav-links { order: 3; width: 100%; overflow-x: auto; padding: 10px 0 12px; white-space: nowrap; }
   .a-page      { padding: 24px 16px 60px; }
+  .a-page-header { flex-wrap: wrap; gap: 16px; }
+  .a-header-right { align-items: flex-start; }
+  .a-page-title { font-size: 32px; }
+  .chart-card, .table-card { padding: 20px 18px; }
+  .chart-header { flex-wrap: wrap; gap: 10px; }
 }

@@ -1,28 +1,41 @@
 <!-- ===== NAVIGATION ===== -->
-<nav class="nav">
+<nav class="nav" [class.open]="menuOpen()">
   <div class="container nav-inner">
     <div class="nav-logo">
-      <img class="nav-sign" src="street-guitar.png" alt="" />
+      <img class="nav-sign" src="street-guitar.svg" alt="" />
       <span>STREET</span><span class="accent">GUITAR</span>
     </div>
-    <div class="nav-links">
+    <!-- desktop: inline links; phones: the dropdown the menu button opens -->
+    <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
+    <div class="nav-links" id="nav-menu" (click)="menuOpen.set(false)">
       <a href="#about">About David</a>
       <a href="#paths">Lessons</a>
       <a href="#pricing">Pricing</a>
       <a href="#contact">Contact</a>
-    </div>
-    @if (auth.isLoggedIn()) {
-      @if (auth.isAdmin()) {
-        <a routerLink="/admin" class="btn btn-ghost btn-sm">Admin</a>
+      @if (auth.isLoggedIn()) {
+        @if (auth.isAdmin()) { <a routerLink="/admin" class="nav-menu-only">Admin</a> }
+      } @else {
+        <a href="#contact" class="btn btn-primary nav-menu-only">Free First Lesson</a>
       }
-      <a routerLink="/learn" class="btn btn-ghost btn-sm">My Course</a>
-      <div class="nav-user-area">
-        <app-nav-user-chip />
-      </div>
-    } @else {
-      <a routerLink="/login" class="btn btn-ghost btn-sm">Sign In</a>
-      <a href="#contact" class="btn btn-primary">Free First Lesson</a>
-    }
+    </div>
+    <div class="nav-actions">
+      @if (auth.isLoggedIn()) {
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin" class="btn btn-ghost btn-sm nav-wide-only">Admin</a>
+        }
+        <a routerLink="/learn" class="btn btn-ghost btn-sm">My Course</a>
+        <div class="nav-user-area">
+          <app-nav-user-chip />
+        </div>
+      } @else {
+        <a routerLink="/login" class="btn btn-ghost btn-sm">Sign In</a>
+        <a href="#contact" class="btn btn-primary nav-wide-only">Free First Lesson</a>
+      }
+      <button type="button" class="nav-toggle" aria-controls="nav-menu" [attr.aria-expanded]="menuOpen()"
+              [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'" (click)="menuOpen.update(v => !v)">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -455,7 +468,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="nav-logo">
-        <img class="nav-sign" src="street-guitar.png" alt="" />
+        <img class="nav-sign" src="street-guitar.svg" alt="" />
         <span>STREET</span><span class="accent">GUITAR</span>
       </div>
       <p class="footer-tagline">Created by David Dunavant &bull; Little Rock, AR</p>

@@ -145,7 +145,7 @@
 
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; } /* #anchors land below the fixed nav */
 body {
   background: var(--bg);
   color: var(--text);
@@ -283,6 +283,65 @@ input, textarea, button { font-family: inherit; }
   transition: color 0.18s;
 }
 .nav-links a:hover { color: var(--text); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.nav-menu-only { display: none; }
+
+/* phones: the links fold into a dropdown under the nav */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 0 9px;
+  background: transparent;
+  border: 1px solid rgba(243,238,228,0.22);
+  border-radius: var(--r);
+  cursor: pointer;
+}
+.nav-toggle span {
+  display: block;
+  height: 2px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.nav.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+.nav.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+@media (max-width: 860px) {
+  .nav-inner { gap: 12px; }
+  .nav-actions { margin-left: auto; }
+  .nav-wide-only { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: 8px 20px 20px;
+    background: rgba(14, 20, 32, 0.98);
+    border-bottom: 3px solid var(--sg-green);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  }
+  .nav.open .nav-links { display: flex; }
+  .nav-links a { font-size: 16px; padding: 14px 4px; border-bottom: 1px solid var(--border); }
+  .nav-links .nav-menu-only { display: flex; }
+  .nav-links .btn-primary { margin-top: 16px; border-bottom: none; color: #fff; }
+}
+
+/* small phones: the sign picture already says STREET GUITAR */
+@media (max-width: 480px) {
+  nav .nav-logo > span { display: none; }
+  .nav-sign { height: 52px; }
+  .btn-sm { padding: 8px 14px; }
+}
 
 /* ===== HERO ===== */
 .hero {
@@ -1112,7 +1171,10 @@ input, textarea, button { font-family: inherit; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-  .hero-layout { grid-template-columns: 1fr; }
+  /* the stacked hero is taller than a phone: centering it would push LEARN up under the nav */
+  .hero { align-items: flex-start; min-height: 0; }
+  .hero-layout { grid-template-columns: minmax(0, 1fr); }
+  .hero-left { padding-right: 0; }
   .hero-right { display: none; }
   .scroll-hint { display: none; }
 }
@@ -1128,11 +1190,13 @@ input, textarea, button { font-family: inherit; }
   .stats-inner { flex-wrap: wrap; }
   .stat-item { flex-basis: 50%; }
   .stat-sep { display: none; }
-  .nav-links { display: none; }
 }
 @media (max-width: 560px) {
+  .container { padding-left: 20px; padding-right: 20px; }
   .section { padding: 64px 0; }
-  .hero-heading { font-size: 80px; }
+  /* GUITAR is the widest plate: keep it inside the screen */
+  .hero-heading { font-size: clamp(44px, 16vw, 80px); }
+  .hero-tagline { letter-spacing: 2px; }
   .hero-actions { flex-direction: column; }
   .pricing-card { padding: 32px 24px; }
   .contact-form-wrap { padding: 28px 20px; }

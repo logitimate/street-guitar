@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -7,4 +8,9 @@ import { RouterModule } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {}
+export class App {
+  constructor() {
+    // router anchor scrolling (#pricing etc.) lands below the fixed home nav
+    inject(ViewportScroller).setOffset([0, 72]);
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, linkedSignal } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -23,7 +23,11 @@ export class LessonPlayer {
   lessonService = inject(LessonService);
 
   curriculum = CURRICULUM;
-  openModules = signal<Set<number>>(new Set([1, 2]));
+  /** the current lesson's module is always opened; anything the student opened stays open */
+  openModules = linkedSignal<number, Set<number>>({
+    source: () => this.currentModule().id,
+    computation: (modId, prev) => new Set([...(prev?.value ?? [1, 2]), modId]),
+  });
 
   currentLessonId = toSignal(
     this.route.params.pipe(map(p => +p['id'])),
@@ -75,11 +79,6 @@ export class LessonPlayer {
 
   goTo(lessonId: number) {
     this.router.navigate(['/learn/lesson', lessonId]);
-    this.openModules.update(set => {
-      const mod = CURRICULUM.find(m => m.lessons.some(l => l.id === lessonId));
-      if (mod) { const next = new Set(set); next.add(mod.id); return next; }
-      return set;
-    });
   }
 
   toggleModule(modId: number) {

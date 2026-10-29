@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CheckoutService } from '../../services/checkout.service';
@@ -11,12 +11,16 @@ import { AsyncState } from '../../utils/async-state';
   selector: 'app-home',
   templateUrl: './home.html',
   imports: [RouterLink, NavUserChip, AccountModal],
+  host: { '(document:keydown.escape)': 'menuOpen.set(false)' },
 })
 export class Home {
   auth             = inject(AuthService);
   accountModal     = inject(AccountModalService);
   private checkout = inject(CheckoutService);
   private router   = inject(Router);
+
+  /** phone nav dropdown */
+  menuOpen = signal(false);
 
   private _checkout   = new AsyncState();
   checkoutLoading = this._checkout.loading;
