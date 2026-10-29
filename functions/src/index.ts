@@ -81,8 +81,8 @@ export const createCheckoutSession = onRequest(
         payment_method_types: ['card'],
         line_items:           [{ price: stripePriceId.value(), quantity: 1 }],
         discounts:            discounts.length ? discounts : undefined,
-        success_url:          `${base}/#/learn?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url:           `${base}/#/`,
+        success_url:          `${base}/learn?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url:           `${base}/`,
       });
 
       res.json({ url: session.url });
@@ -188,6 +188,59 @@ async function rewardReferrer(stripe: Stripe, referralCode: string) {
   });
 }
 
+// ─── cancelSubscription ──────────────────────────────────────────────────────
+
+export const cancelSubscription = onRequest(
+  { secrets: [stripeSecretKey] },
+  async (req, res) => {
+    res.set('Access-Control-Allow-Origin', '*');
+    res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+    if (req.method !== 'POST')    { res.status(405).json({ error: 'Method not allowed' }); return; }
+
+    const authHeader = req.headers['authorization'] ?? '';
+    if (!authHeader.startsWith('Bearer ')) { res.status(401).json({ error: 'Unauthenticated' }); return; }
+
+    let uid: string;
+    try {
+      const decoded = await admin.auth().verifyIdToken(authHeader.slice(7));
+      uid = decoded.uid;
+    } catch {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
+    try {
+      const stripe    = new Stripe(stripeSecretKey.value());
+      const userRef   = db.doc(`users/${uid}`);
+      const userSnap  = await userRef.get();
+      if (!userSnap.exists) { res.status(404).json({ error: 'User not found' }); return; }
+
+      const customerId = userSnap.data()!['stripeCustomerId'] as string | undefined;
+      if (!customerId)  { res.status(400).json({ error: 'No subscription found' }); return; }
+
+      const subs = await stripe.subscriptions.list({ customer: customerId, status: 'active', limit: 1 });
+      if (!subs.data.length) { res.status(400).json({ error: 'No active subscription' }); return; }
+
+      const updated = await stripe.subscriptions.update(subs.data[0].id, { cancel_at_period_end: true });
+
+      await userRef.update({
+        cancelAtPeriodEnd:   true,
+        subscriptionEndDate: updated.current_period_end,
+      });
+
+      res.json({ cancelAt: updated.current_period_end });
+    } catch (err) {
+      console.error('cancelSubscription error:', err);
+      res.status(500).json({ error: 'Internal error' });
+    }
+  },
+);
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
   const customerId = typeof sub.customer === 'string'
     ? sub.customer
@@ -199,6 +252,10 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
     .limit(1)
     .get();
   if (!usersSnap.empty) {
-    await usersSnap.docs[0].ref.update({ subscribed: false });
+    await usersSnap.docs[0].ref.update({
+      subscribed:         false,
+      cancelAtPeriodEnd:  false,
+      subscriptionEndDate: null,
+    });
   }
 }

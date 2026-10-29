@@ -1,0 +1,74 @@
+:host { display: block; }
+button { font: inherit; cursor: pointer; }
+
+.cw-play { display: grid; gap: 20px; }
+@media (min-width: 1100px) {
+  .cw-play { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
+}
+
+.cw-board { display: flex; flex-direction: column; gap: 10px; }
+.cw-move { font-family: var(--font-display); font-size: clamp(40px, 6vw, 60px); line-height: 1; text-align: center; }
+.cw-where { text-align: center; color: var(--sg-pen-dim); font-size: 16px; }
+
+.cw-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 520px; width: 100%; margin: 0 auto; }
+.cw-chart {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: transparent; color: var(--sg-pen);
+  border: 3px solid var(--sg-paper-line); border-radius: 16px; padding: 8px 6px;
+  transition: background .15s, border-color .15s;
+}
+.cw-chart b { font-family: var(--font-display); font-size: 32px; line-height: 1; }
+.cw-chart app-chord-chart { width: 100%; max-width: 220px; }
+.cw-chart:active { background: #EFE6D2; }
+.cw-chart.playing { border-color: var(--accent); background: #FFF4D6; }
+.cw-tap { font-size: 14px; font-weight: 700; color: var(--sg-pen-dim); }
+
+.cw-legend { display: flex; flex-wrap: wrap; gap: 6px 20px; justify-content: center; font-weight: 700; font-size: 15px; }
+.cw-legend i { display: inline-block; width: 18px; height: 18px; border-radius: 50%; vertical-align: -3px; margin-right: 6px; }
+.cw-legend .cf { background: var(--cf); }
+.cw-legend .gf { background: var(--gf); }
+
+.cw-wheel { border-top: 3px solid var(--sg-paper-line); padding-top: 12px; }
+.cw-wheel svg { display: block; width: 100%; max-width: 280px; height: auto; margin: 0 auto; color: var(--sg-pen); }
+.spoke { cursor: pointer; outline: none; }
+.spoke:focus-visible rect { stroke: var(--sg-pen); stroke-width: 4; }
+.cw-key { text-align: center; color: var(--sg-pen-dim); font-size: 14px; margin-top: 6px; }
+.cw-key .kb { color: var(--cf); font-weight: 900; }
+.cw-key .ks { color: var(--gf); font-weight: 900; font-size: 1.3em; }
+
+.cw-quiz { display: flex; flex-direction: column; gap: 14px; }
+.cw-ask { font-family: var(--font-display); font-size: clamp(22px, 3vw, 28px); line-height: 1.2; text-align: center; text-transform: none; }
+.cw-ask b { color: var(--accent); }
+.cw-hint, .cw-words { font-size: 16px; line-height: 1.5; text-align: center; color: var(--text-2); }
+.cw-hint b, .cw-words b { color: var(--text); }
+.cw-quiz .btn { align-self: center; }
+
+.cw-fingers { display: grid; gap: 8px; }
+.cw-f, .cw-hub {
+  border-radius: 14px; border: 3px solid var(--sg-line); background: var(--bg); color: var(--text);
+  font-family: var(--font-display); padding: 4px;
+}
+.cw-f { min-height: 72px; font-size: 36px; }
+.cw-f[aria-pressed='true'], .cw-hub[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+
+.cw-say { font-size: 17px; line-height: 1.45; text-align: center; }
+.cw-say.bad { color: var(--bad); font-weight: 800; }
+.cw-go { min-height: 72px; font-family: var(--font-display); font-size: 24px; width: 100%; }
+.cw-go:disabled { opacity: .4; cursor: default; }
+
+.cw-label { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-2); margin-bottom: 8px; }
+.cw-hubs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+@media (max-width: 560px) { .cw-hubs { grid-template-columns: repeat(4, 1fr); } }
+.cw-hub { min-height: 52px; font-size: 20px; }
+
+.cw-score { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.cw-score div {
+  background: var(--bg); border: 2px solid var(--sg-line); border-radius: 14px;
+  text-align: center; padding: 6px 4px; font-size: 13px; font-weight: 700; color: var(--text-2);
+}
+.cw-score b { display: block; font-family: var(--font-display); font-size: 34px; line-height: 1.1; }
+.cw-score .r b { color: var(--good); }
+.cw-score .w b { color: var(--bad); }
+.cw-score .s b { color: var(--accent); }
+.cw-records { font-size: 14px; text-align: center; color: var(--text-2); }
+.cw-records b { color: var(--text); }

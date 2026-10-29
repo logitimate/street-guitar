@@ -2,6 +2,7 @@
 <nav class="nav">
   <div class="container nav-inner">
     <div class="nav-logo">
+      <img class="nav-sign" src="street-guitar.png" alt="" />
       <span>STREET</span><span class="accent">GUITAR</span>
     </div>
     <div class="nav-links">
@@ -16,9 +17,7 @@
       }
       <a routerLink="/learn" class="btn btn-ghost btn-sm">My Course</a>
       <div class="nav-user-area">
-        <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
-        <span class="nav-uname">{{ auth.user()!.name.split(' ')[0] }}</span>
-        <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+        <app-nav-user-chip />
       </div>
     } @else {
       <a routerLink="/login" class="btn btn-ghost btn-sm">Sign In</a>
@@ -183,8 +182,8 @@
             <li>All skill levels welcome</li>
             <li>Cancel anytime</li>
           </ul>
-          <button class="btn btn-ghost" (click)="startCheckout()" [disabled]="checkoutLoading">
-            {{ checkoutLoading ? 'Loading…' : 'Get Started →' }}
+          <button class="btn btn-ghost" (click)="startCheckout()" [disabled]="checkoutLoading()">
+            {{ checkoutLoading() ? 'Loading…' : 'Get Started →' }}
           </button>
         </div>
       </div>
@@ -372,11 +371,11 @@
           <li>New content added regularly</li>
           <li>Cancel anytime</li>
         </ul>
-        <button class="btn btn-ghost btn-lg btn-block" (click)="startCheckout()" [disabled]="checkoutLoading">
-          {{ checkoutLoading ? 'Loading…' : 'Get Started →' }}
+        <button class="btn btn-ghost btn-lg btn-block" (click)="startCheckout()" [disabled]="checkoutLoading()">
+          {{ checkoutLoading() ? 'Loading…' : 'Get Started →' }}
         </button>
-        @if (checkoutError) {
-          <p class="checkout-error">{{ checkoutError }}</p>
+        @if (checkoutError()) {
+          <p class="checkout-error">{{ checkoutError() }}</p>
         }
         <p class="pricing-fine">Start learning today. No waitlist required.</p>
       </div>
@@ -456,6 +455,7 @@
   <div class="container">
     <div class="footer-top">
       <div class="nav-logo">
+        <img class="nav-sign" src="street-guitar.png" alt="" />
         <span>STREET</span><span class="accent">GUITAR</span>
       </div>
       <p class="footer-tagline">Created by David Dunavant &bull; Little Rock, AR</p>
@@ -469,3 +469,7 @@
     <p class="footer-copy">&copy; 2024 Street Guitar by David Dunavant. All rights reserved.</p>
   </div>
 </footer>
+
+@if (auth.isLoggedIn() && accountModal.isOpen()) {
+  <app-account-modal (close)="accountModal.close()" />
+}

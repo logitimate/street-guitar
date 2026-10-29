@@ -1,0 +1,54 @@
+<p class="t-lede">
+  Strum Along in G, but the camera <b>watches your strumming hand</b>. Every arrow, black or gray, gets a
+  <b class="okw">✓</b> if your hand was moving the right way, down on the numbers and up on the &amp;s.
+  Prop your phone or laptop where it can see your strumming hand. Pictures never leave your device.
+</p>
+
+<div class="sc-picker" role="group" aria-label="Pick a strum pattern">
+  @for (p of picks; track p.mode) {
+    <button type="button" class="sc-pick" [class.wide]="p.wide" [attr.aria-pressed]="mode() === p.mode" (click)="setMode(p.mode)">
+      <span class="n">{{ p.name }}</span><span class="a">{{ p.sub }}</span>
+    </button>
+  }
+</div>
+
+<div class="sc-cam" (click)="toggle()">
+  <video #video playsinline muted></video>
+  <canvas #dots></canvas>
+  @if (flash() !== null) {
+    <span class="sc-flash" [class.no]="flash() === false">{{ flash() ? '✓' : '✗' }}</span>
+  }
+  <p class="sc-camsay">{{ cam.message() }}</p>
+</div>
+
+<section class="t-paper sc-card">
+  <div class="sc-status"><span>{{ status() }}</span>
+    @if (coach(); as c) { <span class="sc-coach" [class.no]="!c.ok">{{ c.text }}</span> }
+  </div>
+  <div class="sc-bar">
+    <app-strum-lane [hits]="hits()" [active]="active()" [liftAt]="liftAt()" [marks]="marks()" />
+    @if (countIn() !== null) {
+      <div class="sc-overlay"><span class="small">Get ready</span><span class="big">{{ countIn() }}</span></div>
+    }
+  </div>
+</section>
+
+<div class="sc-score">
+  <div class="r"><b>{{ right() }}</b>Right</div>
+  <div class="w"><b>{{ wrong() }}</b>Wrong</div>
+  <div class="s"><b>{{ streak() }}</b>Streak · best {{ best() }}</div>
+</div>
+
+<div class="sc-controls">
+  <label class="sc-tempo">
+    <span class="t-label">Speed · <b>{{ bpm() }}</b> bpm</span>
+    <input type="range" min="40" max="160" step="1" [value]="bpm()" (input)="setBpm(+$any($event.target).value)" />
+  </label>
+  <div class="sc-seg" role="group" aria-label="Sound">
+    <button type="button" [attr.aria-pressed]="guitar()" (click)="guitar.set(true)">Guitar + click</button>
+    <button type="button" [attr.aria-pressed]="!guitar()" (click)="guitar.set(false)">Click only</button>
+  </div>
+  <button type="button" class="sg-btn sc-go" [class.stop]="running() || starting()" (click)="toggle()">
+    {{ running() ? 'STOP' : starting() ? 'LOADING…' : 'START' }}
+  </button>
+</div>

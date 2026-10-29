@@ -19,23 +19,30 @@ export class LessonService {
 
   private _videoIds = signal<Record<string, string>>({});
   private _loaded   = signal(false);
+  private _error    = signal<string | null>(null);
 
   readonly videoIds = this._videoIds.asReadonly();
   readonly loaded   = this._loaded.asReadonly();
+  readonly error    = this._error.asReadonly();
 
   constructor() {
     this.loadAll();
   }
 
   private async loadAll() {
-    const snap = await getDocs(collection(this.db, 'lessons'));
-    const ids: Record<string, string> = {};
-    snap.forEach(d => {
-      const v = (d.data() as { videoId?: string }).videoId;
-      if (v) ids[d.id] = v;
-    });
-    this._videoIds.set(ids);
-    this._loaded.set(true);
+    try {
+      const snap = await getDocs(collection(this.db, 'lessons'));
+      const ids: Record<string, string> = {};
+      snap.forEach(d => {
+        const v = (d.data() as { videoId?: string }).videoId;
+        if (v) ids[d.id] = v;
+      });
+      this._videoIds.set(ids);
+    } catch {
+      this._error.set('Failed to load lessons. Please refresh.');
+    } finally {
+      this._loaded.set(true);
+    }
   }
 
   getVideoId(lessonId: number): string | null {

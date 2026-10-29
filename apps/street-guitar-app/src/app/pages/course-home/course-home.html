@@ -2,6 +2,7 @@
 <nav class="c-nav">
   <div class="c-nav-inner">
     <a routerLink="/" class="nav-logo">
+      <img class="nav-sign" src="street-guitar.png" alt="" />
       <span>STREET</span><span class="accent">GUITAR</span>
     </a>
     <div class="c-nav-links">
@@ -11,9 +12,7 @@
       }
     </div>
     <div class="c-nav-user">
-      <div class="user-avatar-chip">{{ auth.user()!.name[0] }}</div>
-      <span class="user-name">{{ auth.user()!.name.split(' ')[0] }}</span>
-      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+      <app-nav-user-chip />
     </div>
   </div>
 </nav>
@@ -99,6 +98,10 @@
     </div>
   </div>
 </div>
+
+@if (accountModal.isOpen()) {
+  <app-account-modal (close)="accountModal.close()" />
+}
 
 <!-- ===== MODULE GRID ===== -->
 <div class="modules-section">

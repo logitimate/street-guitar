@@ -1,0 +1,44 @@
+:host { display: flex; flex-direction: column; gap: 18px; }
+button { font: inherit; cursor: pointer; }
+
+.pt-progs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 640px) { .pt-progs { grid-template-columns: repeat(2, 1fr); } }
+.pt-prog, .pt-steps button {
+  border: 3px solid var(--sg-line); background: var(--bg-card); color: var(--text);
+  border-radius: 14px; padding: 10px 6px; min-height: 68px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.pt-prog .n, .pt-steps .n { font-family: var(--font-display); font-size: 18px; line-height: 1.1; }
+.pt-prog .c, .pt-steps .a { font-size: 15px; color: var(--text-2); }
+.pt-prog[aria-pressed='true'], .pt-steps button[aria-pressed='true'] { background: var(--text); border-color: var(--text); color: var(--bg); }
+.pt-prog[aria-pressed='true'] .c, .pt-steps button[aria-pressed='true'] .a { color: var(--bg); }
+.pt-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.pt-card { display: flex; flex-direction: column; gap: 10px; }
+.pt-bars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.pt-chord {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: transparent; color: var(--sg-pen);
+  border: 3px solid var(--sg-paper-line); border-radius: 14px; padding: 6px 4px;
+}
+.pt-chord b { font-family: var(--font-display); font-size: 26px; line-height: 1; }
+.pt-chord app-chord-chart { width: 100%; max-width: 150px; }
+.pt-chord.on { border-color: var(--accent); background: #FFF4D6; }
+.pt-back { text-align: right; font-size: 15px; font-weight: 700; color: var(--sg-pen-dim); }
+.pt-switch { font-size: 15px; text-align: center; font-weight: 700; }
+.pt-lane { position: relative; }
+.pt-overlay {
+  position: absolute; inset: -4px; display: flex; align-items: center; justify-content: center; gap: 14px;
+  background: var(--sg-paper); border-radius: 12px; color: var(--sg-pen);
+}
+.pt-overlay .big { font-family: var(--font-display); font-size: 80px; line-height: 1; }
+.pt-overlay .small { font-family: var(--font-display); font-size: 20px; color: var(--sg-pen-dim); text-transform: uppercase; }
+.pt-tip { font-size: 15px; color: var(--sg-pen-dim); }
+.pt-tip b { color: var(--sg-pen); }
+
+.pt-controls { display: flex; flex-direction: column; gap: 14px; }
+.pt-tempo { display: flex; flex-direction: column; gap: 8px; }
+.pt-tempo b { color: var(--text); }
+.pt-tempo input { width: 100%; accent-color: var(--sg-green); height: 28px; }
+.pt-go { min-height: 84px; font-family: var(--font-display); font-size: 36px; width: 100%; }
+.pt-go.stop { background: var(--stop); }

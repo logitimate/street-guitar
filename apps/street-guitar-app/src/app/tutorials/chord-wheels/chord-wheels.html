@@ -1,0 +1,99 @@
+<p class="t-lede">
+  Switch from the middle chord to each chord around the wheel, and back. Find the
+  <b>common finger</b> and the <b>guide finger</b> every time.
+</p>
+
+<div class="cw-play">
+  <!-- the book page: charts + wheel -->
+  <section class="t-paper cw-board">
+    <div class="cw-move">{{ step().hub }} → {{ step().to }}</div>
+    <div class="cw-where">{{ position() }}</div>
+
+    <div class="cw-pair">
+      @for (c of [step().hub, step().to]; track $index; let j = $index) {
+        <button type="button" class="cw-chart" [class.playing]="playing() === j"
+                (click)="hear(j)" [attr.aria-label]="'Hear ' + label[c]">
+          <b>{{ c }}</b>
+          <app-chord-chart [chord]="c" [numbers]="answered()" [cf]="cfShown()" [gf]="gfShown()" [pop]="pop()" />
+          <span class="cw-tap">▶ Tap to hear</span>
+        </button>
+      }
+    </div>
+
+    @if (cfShown().length || gfShown().length) {
+      <div class="cw-legend">
+        @if (cfShown().length) { <span><i class="cf"></i>Common finger</span> }
+        @if (gfShown().length) { <span><i class="gf"></i>★ Guide finger</span> }
+      </div>
+    }
+
+    <div class="cw-wheel">
+      <svg viewBox="0 0 340 340" role="group" [attr.aria-label]="'The ' + label[step().hub] + ' wheel'">
+        <circle cx="170" cy="170" r="160" fill="none" stroke="currentColor" stroke-width="4" />
+        <text x="170" y="192" text-anchor="middle" [attr.font-size]="step().hub.length > 1 ? 60 : 72" font-weight="800" fill="currentColor">{{ step().hub }}</text>
+        @for (s of wheel(); track s.c) {
+          <g class="spoke" tabindex="0" role="button"
+             [attr.aria-label]="label[step().hub] + ' to ' + label[s.c] + (s.bold ? ', has a common finger' : '') + (s.star ? ', has a guide finger' : '')"
+             (click)="jump(step().hub, s.c)" (keydown.enter)="jump(step().hub, s.c)" (keydown.space)="jump(step().hub, s.c); $event.preventDefault()">
+            <rect [attr.x]="s.x - s.w / 2" [attr.y]="s.y - 33" [attr.width]="s.w" height="64" rx="18"
+                  [attr.fill]="s.on ? 'var(--accent)' : 'transparent'" />
+            <text [attr.x]="s.x" [attr.y]="s.y + 15" text-anchor="middle" font-size="42"
+                  [attr.font-weight]="s.bold ? 900 : 400" [attr.fill]="s.bold ? 'var(--cf)' : 'currentColor'">{{ s.c }}@if (s.star) {<tspan fill="var(--gf)" font-weight="900">*</tspan>}</text>
+          </g>
+        }
+      </svg>
+      <p class="cw-key"><b class="kb">Bold</b> = has a common finger · <b class="ks">*</b> = has a guide finger</p>
+    </div>
+  </section>
+
+  <!-- the question -->
+  <section class="t-panel cw-quiz" aria-live="polite">
+    @if (ask(); as a) {
+      <p class="cw-ask">Which finger is the <b>{{ a.ask }}</b>?</p>
+      <p class="cw-hint">{{ a.hint }}</p>
+      <div class="cw-fingers" [style.grid-template-columns]="'repeat(' + choices().length + ', 1fr)'">
+        @for (f of choices(); track f) {
+          <button type="button" class="cw-f" [attr.aria-pressed]="picked().includes(f)" (click)="toggle(f)">{{ f }}</button>
+        }
+      </div>
+    } @else {
+      <p class="cw-ask">Now play it: {{ step().hub }} → {{ step().to }} → {{ step().hub }}</p>
+      @if (!qs().length) {
+        <p class="cw-hint">
+          <b>No common finger or guide finger here.</b> Picture it first: without moving your hand, imagine each finger,
+          one at a time, moving to its spot in the next chord. Then move your hand and match the shape.
+          <b>Switch up the order</b> you picture the fingers.
+        </p>
+      }
+      <p class="cw-words" [innerHTML]="step().hub + ' to ' + step().to + ': ' + switchWords()"></p>
+      <button type="button" class="btn btn-ghost" (click)="playBack()">▶ Hear it switch</button>
+    }
+
+    @for (m of msg(); track $index) {
+      <p class="cw-say" [class.bad]="m.tone === 'bad'" [innerHTML]="m.html"></p>
+    }
+
+    <button type="button" class="sg-btn cw-go" [disabled]="!answered() && !picked().length" (click)="primary()">
+      {{ !answered() ? 'Check' : isLast() ? 'Finish the cycle ▶' : 'Next switch ▶' }}
+    </button>
+
+    <div>
+      <p class="cw-label">Pick a wheel</p>
+      <div class="cw-hubs">
+        @for (h of hubs; track h) {
+          <button type="button" class="cw-hub" [attr.aria-pressed]="h === step().hub" (click)="pickHub(h)">{{ h }}</button>
+        }
+      </div>
+    </div>
+
+    <div class="cw-score">
+      <div class="r"><b>{{ right() }}</b>Right</div>
+      <div class="w"><b>{{ wrong() }}</b>Wrong</div>
+      <div class="s"><b>{{ streak() }}</b>Streak</div>
+    </div>
+    <p class="cw-records">
+      Whole cycles: <b>{{ records().cycles }}</b> · Best cycle: <b>{{ records().bestCycle }}</b> of {{ total }}
+      · Longest streak: <b>{{ records().bestStreak }}</b>
+    </p>
+  </section>
+</div>

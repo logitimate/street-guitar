@@ -1,24 +1,19 @@
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LessonService } from '../../services/lesson.service';
 import { CURRICULUM } from '../curriculum-data';
+import { NavUserChip } from '../../components/nav-user-chip';
 
 @Component({
   selector: 'app-admin-content',
   templateUrl: './admin-content.html',
   styleUrl: './admin-content.css',
-  imports: [RouterLink],
+  imports: [RouterLink, NavUserChip],
 })
 export class AdminContent {
   auth          = inject(AuthService);
   lessonService = inject(LessonService);
-  private router = inject(Router);
-
-  async logout() {
-    await this.auth.logout();
-    this.router.navigate(['/login']);
-  }
 
   curriculum = CURRICULUM;
 

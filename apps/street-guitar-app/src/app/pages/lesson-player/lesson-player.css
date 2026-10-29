@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(10,10,10,0.95);
+  background: rgba(14,20,32,0.95);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
@@ -148,7 +148,7 @@
 
 .video-placeholder {
   aspect-ratio: 16 / 9;
-  background: #050505;
+  background: #0A0F18;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;

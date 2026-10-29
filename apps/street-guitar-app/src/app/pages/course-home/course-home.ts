@@ -1,7 +1,10 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CURRICULUM, Module } from '../curriculum-data';
 import { AuthService } from '../../services/auth.service';
+import { NavUserChip } from '../../components/nav-user-chip';
+import { AccountModal } from '../../components/account-modal';
+import { AccountModalService } from '../../services/account-modal.service';
 
 interface ModuleViewModel extends Module {
   progress: number;
@@ -14,16 +17,11 @@ interface ModuleViewModel extends Module {
   selector: 'app-course-home',
   templateUrl: './course-home.html',
   styleUrl: './course-home.css',
-  imports: [RouterLink],
+  imports: [RouterLink, NavUserChip, AccountModal],
 })
 export class CourseHome {
-  auth = inject(AuthService);
-  private router = inject(Router);
-
-  async logout() {
-    await this.auth.logout();
-    this.router.navigate(['/login']);
-  }
+  auth         = inject(AuthService);
+  accountModal = inject(AccountModalService);
 
   readonly totalLessons = CURRICULUM.reduce((n, m) => n + m.lessons.length, 0);
 
@@ -69,8 +67,7 @@ export class CourseHome {
   referralLink = computed(() => {
     const code = this.auth.user()?.referralCode;
     if (!code) return '';
-    const base = window.location.origin + window.location.pathname;
-    return `${base}#/?ref=${code}`;
+    return `${document.baseURI}?ref=${code}`;
   });
 
   referralCount = computed(() => this.auth.user()?.referralCount ?? 0);

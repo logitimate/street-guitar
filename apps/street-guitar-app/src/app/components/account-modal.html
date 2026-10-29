@@ -1,0 +1,100 @@
+<div class="am-backdrop" (click)="close.emit()">
+  <div class="am-card" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="am-header">
+      <h2 class="am-title">My Account</h2>
+      <button class="am-close" (click)="close.emit()">✕</button>
+    </div>
+
+    <!-- Profile -->
+    <div class="am-profile">
+      <div class="am-avatar">{{ auth.user()!.name[0] }}</div>
+      <div class="am-profile-info">
+        <p class="am-name">{{ auth.user()!.name }}</p>
+        <p class="am-email">{{ auth.user()!.email }}</p>
+      </div>
+    </div>
+
+    <div class="am-divider"></div>
+
+    <!-- Subscription -->
+    <div class="am-section">
+      <p class="am-section-label">Subscription</p>
+
+      @if (auth.isSubscribed()) {
+        @if (cancelAtPeriodEnd()) {
+          <div class="am-sub-row">
+            <span class="am-badge am-badge--cancelling">Cancelling</span>
+            <span class="am-sub-detail">Access until {{ subscriptionEndDate() }}</span>
+          </div>
+          <p class="am-note">Your subscription will not renew. You keep full access until the date above.</p>
+        } @else {
+          <div class="am-sub-row">
+            <span class="am-badge am-badge--active">Active</span>
+            <span class="am-sub-detail">Street Guitar Online Course</span>
+          </div>
+
+          @if (!confirmCancel()) {
+            <button class="am-cancel-btn" (click)="confirmCancel.set(true)">Cancel Subscription</button>
+          } @else {
+            <div class="am-confirm-box">
+              <p class="am-confirm-text">
+                Are you sure? You'll keep full access until the end of your current billing period.
+              </p>
+              <div class="am-confirm-actions">
+                <button class="am-btn-ghost" (click)="confirmCancel.set(false)" [disabled]="cancelling()">
+                  Keep Subscription
+                </button>
+                <button class="am-btn-danger" (click)="confirmCancelSubscription()" [disabled]="cancelling()">
+                  {{ cancelling() ? 'Cancelling…' : 'Yes, Cancel' }}
+                </button>
+              </div>
+              @if (cancelError()) {
+                <p class="am-error">{{ cancelError() }}</p>
+              }
+            </div>
+          }
+        }
+
+        @if (cancelled()) {
+          <p class="am-success">
+            Subscription cancelled. You'll have access until {{ subscriptionEndDate() }}.
+          </p>
+        }
+      } @else {
+        <div class="am-sub-row">
+          <span class="am-badge am-badge--inactive">Not Subscribed</span>
+        </div>
+        <p class="am-note">Get access to all lessons and modules.</p>
+        <button class="am-subscribe-btn" (click)="startSubscribe()" [disabled]="subscribing()">
+          {{ subscribing() ? 'Redirecting…' : 'Subscribe Now' }}
+        </button>
+        @if (subscribeError()) {
+          <p class="am-error">{{ subscribeError() }}</p>
+        }
+      }
+    </div>
+
+    <div class="am-divider"></div>
+
+    <!-- Referral -->
+    <div class="am-section">
+      <p class="am-section-label">Refer a Friend</p>
+      <p class="am-ref-sub">Share your link — they get their first month free, you earn $10 credit.</p>
+      <div class="am-ref-row">
+        <input class="am-ref-input" [value]="referralLink()" readonly (click)="$any($event.target).select()">
+        <button class="am-ref-copy" [class.copied]="linkCopied()" (click)="copyReferralLink()">
+          {{ linkCopied() ? '✓ Copied' : 'Copy' }}
+        </button>
+      </div>
+      <p class="am-ref-count">{{ auth.user()!.referralCount }} / 3 referrals rewarded</p>
+    </div>
+
+    <div class="am-divider"></div>
+
+    <!-- Sign out -->
+    <button class="am-signout-btn" (click)="auth.logout()">Sign Out</button>
+
+  </div>
+</div>

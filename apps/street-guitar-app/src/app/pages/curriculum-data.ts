@@ -1,7 +1,11 @@
+import { TutorialId } from '../tutorials/tutorials';
+
 export interface Lesson {
   id: number;
   title: string;
   duration: string;
+  /** interactive practice apps shown under the video */
+  tutorials?: TutorialId[];
 }
 
 export interface Module {
@@ -36,10 +40,10 @@ export const CURRICULUM: Module[] = [
       { id: 7,  title: 'The A Minor Chord',           duration: '9:45'  },
       { id: 8,  title: 'The D Major Chord',           duration: '11:20' },
       { id: 9,  title: 'The G Major Chord',           duration: '12:00' },
-      { id: 10, title: 'Switching Between Chords',    duration: '14:30' },
+      { id: 10, title: 'Switching Between Chords',    duration: '14:30', tutorials: ['chord-wheels'] },
       { id: 11, title: 'The C Major Chord',           duration: '10:15' },
       { id: 12, title: 'The A Major Chord',           duration: '9:30'  },
-      { id: 13, title: 'Open Chord Progressions',     duration: '15:45' },
+      { id: 13, title: 'Open Chord Progressions',     duration: '15:45', tutorials: ['puttin-it-together', 'chord-wheels'] },
     ],
   },
   {
@@ -49,11 +53,11 @@ export const CURRICULUM: Module[] = [
     locked: false,
     lessons: [
       { id: 14, title: 'Understanding Rhythm',        duration: '8:00'  },
-      { id: 15, title: 'Down Strumming Patterns',     duration: '11:30' },
-      { id: 16, title: 'Up & Down Patterns',          duration: '13:00' },
-      { id: 17, title: 'The 8th Note Strum',          duration: '12:45' },
+      { id: 15, title: 'Down Strumming Patterns',     duration: '11:30', tutorials: ['strum-along-g', 'strum-check'] },
+      { id: 16, title: 'Up & Down Patterns',          duration: '13:00', tutorials: ['strum-along-g', 'strum-check'] },
+      { id: 17, title: 'The 8th Note Strum',          duration: '12:45', tutorials: ['strum-along-g', 'strum-check'] },
       { id: 18, title: 'Muting Techniques',           duration: '10:20' },
-      { id: 19, title: 'Applying Rhythm to Songs',    duration: '16:00' },
+      { id: 19, title: 'Applying Rhythm to Songs',    duration: '16:00', tutorials: ['puttin-it-together', 'strum-along-g'] },
     ],
   },
   {

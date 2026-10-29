@@ -1,0 +1,41 @@
+<div class="sa-chord" aria-label="G chord">
+  <app-chord-chart chord="G" />
+  <b>G</b>
+</div>
+
+<div class="sa-picker" role="group" aria-label="Pick a strum pattern">
+  @for (p of picks; track p.mode) {
+    <button type="button" class="sa-pick" [class.wide]="p.wide" [attr.aria-pressed]="mode() === p.mode" (click)="setMode(p.mode)">
+      <span class="n">{{ p.name }}</span><span class="a">{{ p.sub }}</span>
+    </button>
+  }
+</div>
+
+<section class="t-paper sa-card">
+  <div class="sa-status"><span>{{ status() }}</span><span class="dim">{{ next() }}</span></div>
+  <div class="sa-bar">
+    <app-strum-lane [hits]="hits()" [active]="active()" [liftAt]="liftAt()" />
+    @if (countIn() !== null) {
+      <div class="sa-overlay"><span class="small">Get ready</span><span class="big">{{ countIn() }}</span></div>
+    }
+  </div>
+  <p class="sa-tip">
+    <strong>Black arrow:</strong> hit the strings. <strong>Gray arrow:</strong> keep your hand moving, just miss the strings.
+    @if (mode() === 'lift') {
+      <strong class="lift">Red arrow: lift off.</strong> Take your fingers off the G, strum the open strings, then land right back on G on beat 1.
+    }
+  </p>
+</section>
+
+<div class="sa-controls">
+  <label class="sa-tempo">
+    <span class="t-label">Speed · <b>{{ bpm() }}</b> bpm</span>
+    <input type="range" min="40" max="160" step="1" [value]="bpm()" (input)="setBpm(+$any($event.target).value)" />
+  </label>
+  <div class="sa-seg" role="group" aria-label="Sound">
+    <button type="button" [attr.aria-pressed]="guitar()" (click)="guitar.set(true)">Guitar + click</button>
+    <button type="button" [attr.aria-pressed]="!guitar()" (click)="guitar.set(false)">Click only</button>
+  </div>
+  <button type="button" class="sg-btn sa-go" [class.stop]="running()" (click)="toggle()">{{ running() ? 'STOP' : 'START' }}</button>
+  <p class="sa-note">You get one bar of clicks first, then it loops.</p>
+</div>

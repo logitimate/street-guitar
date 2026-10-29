@@ -6,12 +6,14 @@ import { map } from 'rxjs';
 import { ALL_LESSONS, CURRICULUM, Lesson, Module } from '../curriculum-data';
 import { AuthService } from '../../services/auth.service';
 import { LessonService } from '../../services/lesson.service';
+import { NavUserChip } from '../../components/nav-user-chip';
+import { PracticeSection } from '../../tutorials/practice-section';
 
 @Component({
   selector: 'app-lesson-player',
   templateUrl: './lesson-player.html',
   styleUrl: './lesson-player.css',
-  imports: [RouterLink],
+  imports: [RouterLink, NavUserChip, PracticeSection],
 })
 export class LessonPlayer {
   private route     = inject(ActivatedRoute);
@@ -19,11 +21,6 @@ export class LessonPlayer {
   private sanitizer = inject(DomSanitizer);
   auth          = inject(AuthService);
   lessonService = inject(LessonService);
-
-  async logout() {
-    await this.auth.logout();
-    this.router.navigate(['/login']);
-  }
 
   curriculum = CURRICULUM;
   openModules = signal<Set<number>>(new Set([1, 2]));

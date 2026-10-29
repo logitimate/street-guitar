@@ -1,0 +1,59 @@
+<p class="t-lede">
+  The book's four open-chord progressions. Isolate one problem at a time, then put it all together.
+</p>
+
+<div class="pt-progs" role="group" aria-label="Pick a progression">
+  @for (pr of progs; track $index; let i = $index) {
+    <button type="button" class="pt-prog" [attr.aria-pressed]="p() === i" (click)="pickProg(i)">
+      <span class="n">#{{ i + 1 }}</span><span class="c">{{ pr.join(' ') }}</span>
+    </button>
+  }
+</div>
+
+<div class="pt-steps" role="group" aria-label="Pick a step">
+  <button type="button" [attr.aria-pressed]="stepId() === 1" (click)="pickStep(1)">
+    <span class="n">Step 1</span><span class="a">One strum, then switch</span>
+  </button>
+  <button type="button" [attr.aria-pressed]="stepId() === 2" (click)="pickStep(2)">
+    <span class="n">Step 2</span><span class="a">Puttin' it all together</span>
+  </button>
+</div>
+
+<section class="t-paper pt-card">
+  <div class="pt-bars">
+    @for (c of prog(); track $index; let i = $index) {
+      <button type="button" class="pt-chord" [class.on]="i === chordIdx()" (click)="hear(i)"
+              [attr.aria-label]="'Hear ' + c">
+        <b>{{ c }}</b>
+        <app-chord-chart [chord]="c"
+          [cf]="i === chordIdx() ? switchMoves().cf : []"
+          [gf]="i === chordIdx() ? switchMoves().gf : []" />
+      </button>
+    }
+  </div>
+  <p class="pt-back">↩ Then back to {{ prog()[0] }}</p>
+  <p class="pt-switch">{{ switchLine() }}</p>
+
+  <div class="pt-lane">
+    <app-strum-lane [hits]="hits()" [active]="active()" [liftAt]="liftAt()" />
+    @if (countIn() !== null) {
+      <div class="pt-overlay"><span class="small">Get ready</span><span class="big">{{ countIn() }}</span></div>
+    }
+  </div>
+  <p class="pt-tip">
+    @if (stepId() === 1) {
+      <b>Down</b> once on each chord, then go straight to the next one. <b>Don't wait.</b>
+      Too fast? Slow it down, or picture the switch first.
+    } @else {
+      <b>Pattern 3</b> on every chord. On the last &amp;, fingers off and strum the open strings. Land on the next chord on 1.
+    }
+  </p>
+</section>
+
+<div class="pt-controls">
+  <label class="pt-tempo">
+    <span class="t-label">Speed · <b>{{ bpm() }}</b> bpm</span>
+    <input type="range" min="40" max="120" step="1" [value]="bpm()" (input)="setBpm(+$any($event.target).value)" />
+  </label>
+  <button type="button" class="sg-btn pt-go" [class.stop]="running()" (click)="toggle()">{{ running() ? 'STOP' : 'START' }}</button>
+</div>

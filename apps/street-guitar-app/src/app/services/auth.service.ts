@@ -1,4 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   getAuth, onAuthStateChanged, GoogleAuthProvider,
   signInWithPopup, signOut, User as FirebaseUser,
@@ -20,12 +21,15 @@ export interface AppUser {
   referralCount: number;
   referralRewarded: boolean;
   stripeCustomerId: string | null;
+  cancelAtPeriodEnd?: boolean;
+  subscriptionEndDate?: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _auth = getAuth();
-  private _db   = getFirestore();
+  private _auth   = getAuth();
+  private _db     = getFirestore();
+  private _router = inject(Router);
 
   private _user    = signal<AppUser | null>(null);
   private _loading = signal(true);
@@ -64,6 +68,14 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await signOut(this._auth);
+    this._router.navigate(['/login']);
+  }
+
+  async refreshUser(): Promise<void> {
+    const uid = this._user()?.uid;
+    if (!uid) return;
+    const snap = await getDoc(doc(this._db, 'users', uid));
+    if (snap.exists()) this._user.set({ uid, ...snap.data() } as AppUser);
   }
 
   async markLessonComplete(lessonId: number): Promise<void> {
@@ -103,10 +115,7 @@ export class AuthService {
   }
 
   private _getRefCode(): string | null {
-    // Hash routing: window.location.hash = '#/login?ref=ABC123'
-    const hash = window.location.hash;
-    const qIdx = hash.indexOf('?');
-    if (qIdx === -1) return null;
-    return new URLSearchParams(hash.slice(qIdx + 1)).get('ref');
+    // e.g. /street-guitar/login?ref=ABC123 (old #/ links are rewritten to this in main.ts)
+    return new URLSearchParams(window.location.search).get('ref');
   }
 }

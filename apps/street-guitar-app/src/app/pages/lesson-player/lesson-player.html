@@ -3,11 +3,11 @@
   <div class="p-nav-inner">
     <a routerLink="/learn" class="p-back-link">← Course Home</a>
     <div class="nav-logo p-nav-logo">
+      <img class="nav-sign" src="street-guitar.png" alt="" />
       <span>STREET</span><span class="accent">GUITAR</span>
     </div>
     <div class="p-nav-right">
-      <div class="nav-avatar">{{ auth.user()!.name[0] }}</div>
-      <button class="nav-signout-btn" (click)="logout()">Sign out</button>
+      <app-nav-user-chip />
     </div>
   </div>
 </nav>
@@ -119,6 +119,15 @@
         @else { Mark as Complete }
       </button>
     </div>
+
+    <!-- PRACTICE APPS (Book 1 Ch 2) -->
+    @if (currentLesson().tutorials; as tutorials) {
+      @defer (on viewport) {
+        <app-practice-section [tutorials]="tutorials" />
+      } @placeholder {
+        <div style="min-height: 200px"></div>
+      }
+    }
 
   </main>
 </div>

@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AsyncState } from '../../utils/async-state';
 
 @Component({
   selector: 'app-login',
@@ -13,15 +14,17 @@ export class Login {
   private router = inject(Router);
   private route  = inject(ActivatedRoute);
 
-  loading = signal(false);
-  error   = signal('');
+  private _state = new AsyncState();
+  loading = this._state.loading;
+  error   = this._state.error;
 
   async signInWithGoogle() {
     this.loading.set(true);
     this.error.set('');
     try {
       await this.auth.signInWithGoogle();
-      const returnUrl = this.route.snapshot.queryParams['returnUrl'] ?? '/learn';
+      const raw       = this.route.snapshot.queryParams['returnUrl'] ?? '/learn';
+      const returnUrl = raw.startsWith('/') ? raw : '/learn';
       this.router.navigateByUrl(returnUrl);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : '';

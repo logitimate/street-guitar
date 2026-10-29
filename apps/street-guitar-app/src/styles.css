@@ -1,21 +1,147 @@
-/* ===== CSS VARIABLES ===== */
+/* ===== CSS VARIABLES =====
+   The Street Guitar look (matches the books and street-guitar-apps/shared/street-guitar.css):
+   a dark navy stage, ivory lettering, brass accents, and green street-sign surfaces with a white inset line.
+   Green is a BACKGROUND with white on it, never green text on the stage (too hard to read). */
 :root {
-  --bg: #0a0a0a;
-  --bg-alt: #0f0f0f;
-  --bg-card: #141414;
-  --accent: #ff6b35;
-  --accent-dim: rgba(255, 107, 53, 0.1);
-  --accent-border: rgba(255, 107, 53, 0.25);
-  --accent-hover: #ff8554;
-  --text: #ffffff;
-  --text-2: #888888;
-  --text-3: #555555;
-  --border: rgba(255, 255, 255, 0.07);
-  --font-display: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+  color-scheme: dark;
+
+  /* street sign */
+  --sg-green: #006838;
+  --sg-green-hi: #0A7A45;
+  --sg-green-hover: #087a44;
+  --sg-line: #2C3A56;
+  /* the music (charts, arrows) sits on paper with a black pen, like the book page */
+  --sg-paper: #F6F1E6;
+  --sg-paper-line: #D9CFBC;
+  --sg-pen: #17191E;
+  --sg-pen-dim: #555B66;
+  --sg-ghost: #B4B8AD;
+
+  /* colors that MEAN something in the practice apps */
+  --cf: #1F7A4D;      /* common finger */
+  --gf: #2259B8;      /* guide finger */
+  --good: #7FD3A2;
+  --bad: #F2A38C;
+  --hi: #FFE14D;      /* the beat that's sounding now */
+  --hi-soft: #FFF1A6;
+  --lift: #D0201A;    /* lift off */
+  --stop: #B3261E;
+
+  --bg: #0E1420;
+  --bg-alt: #121A29;
+  --bg-card: #182235;
+  --bg-card-hover: #1E2A40;
+  --accent: #D2AE63;
+  --accent-dim: rgba(210, 174, 99, 0.12);
+  --accent-border: rgba(210, 174, 99, 0.32);
+  --accent-hover: #E0C07A;
+  --text: #F3EEE4;
+  --text-2: #A9B4C8;
+  --text-3: #6B7891;
+  --border: rgba(169, 180, 200, 0.14);
+  --font-display: 'Montserrat', 'Arial Black', 'Helvetica Neue', Arial, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --max-w: 1200px;
-  --r: 3px;
+  --r: 10px;
 }
+
+/* ===== STREET SIGN =====
+   A little lighter at the top like the shine on real sign sheeting, and the white line 6px in. */
+.sg-sign {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2.6vw, 20px);
+  background: linear-gradient(180deg, var(--sg-green-hi) 0%, var(--sg-green) 55%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 12px clamp(16px, 3.4vw, 26px) 12px clamp(12px, 2.6vw, 20px);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+}
+.sg-sign::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 3px solid #fff;
+  border-radius: 11px;
+  pointer-events: none;
+}
+.sg-sign > div { min-width: 0; }
+.sg-logo {
+  display: block;
+  flex: none;
+  height: clamp(64px, 14vw, 92px);
+  width: auto;
+  margin-block: -4px;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
+}
+.sg-eyebrow {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sg-sign h1, .sg-sign h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  margin: 2px 0 0;
+  line-height: 0.98;
+  font-size: clamp(26px, 5vw, 44px);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* The main button is a small street sign too. A state that means something (a red Stop) sets its own background. */
+.sg-btn {
+  position: relative;
+  appearance: none;
+  border: 0;
+  border-radius: 18px;
+  background: var(--sg-green);
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.sg-btn::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+/* ===== PRACTICE APP SURFACES ===== */
+.t-paper {
+  background: var(--sg-paper);
+  color: var(--sg-pen);
+  border-radius: 20px;
+  padding: clamp(14px, 2vw, 22px);
+}
+.t-panel {
+  background: var(--bg-card);
+  border: 2px solid var(--sg-line);
+  border-radius: 20px;
+  padding: clamp(14px, 2vw, 22px);
+}
+.t-lede { font-size: 17px; line-height: 1.5; color: var(--text-2); margin-bottom: 16px; }
+.t-lede b { color: var(--text); }
+.t-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+/* text rendered via [innerHTML] in the practice apps */
+.cfw { color: #5FCB8E; font-weight: 800; }
+.gfw { color: #7FA7F0; font-weight: 800; }
+.good { color: var(--good); font-weight: 800; }
 
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -81,14 +207,32 @@ input, textarea, button { font-family: inherit; }
   transition: background 0.18s, transform 0.15s, border-color 0.18s;
   white-space: nowrap;
 }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+/* primary = a little street sign: green, white inset line, white words */
+.btn-primary {
+  position: relative;
+  background: var(--sg-green);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 15px 30px;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 2px solid #fff;
+  border-radius: calc(var(--r) - 4px);
+  pointer-events: none;
+}
+.btn-primary:hover { background: var(--sg-green-hover); transform: translateY(-1px); }
 .btn-ghost {
   background: transparent;
   color: var(--text);
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid rgba(243,238,228,0.22);
 }
-.btn-ghost:hover { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.04); }
+.btn-ghost:hover { border-color: rgba(243,238,228,0.5); background: rgba(243,238,228,0.05); }
 .btn-lg { padding: 16px 36px; font-size: 15px; }
 .btn-block { width: 100%; display: flex; }
 
@@ -97,9 +241,9 @@ input, textarea, button { font-family: inherit; }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 200;
-  background: rgba(10, 10, 10, 0.88);
+  background: rgba(14, 20, 32, 0.9);
   backdrop-filter: blur(16px) saturate(1.2);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 3px solid var(--sg-green);
 }
 .nav-inner {
   height: 64px;
@@ -109,12 +253,21 @@ input, textarea, button { font-family: inherit; }
 }
 .nav-logo {
   font-family: var(--font-display);
-  font-size: 21px;
-  letter-spacing: 3px;
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 1px;
   text-decoration: none;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: 6px;
   flex-shrink: 0;
+}
+/* the two signs on the post, hanging a little below the nav like a real street corner */
+.nav-sign {
+  height: 58px;
+  width: auto;
+  margin: 6px 4px -10px 0;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.55));
 }
 .nav-links {
   display: flex;
@@ -144,8 +297,8 @@ input, textarea, button { font-family: inherit; }
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 55% 65% at 75% 45%, rgba(255,107,53,0.09) 0%, transparent 65%),
-    radial-gradient(ellipse 30% 40% at 5% 85%, rgba(255,107,53,0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 55% 65% at 75% 45%, rgba(0,104,56,0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 40% at 5% 85%, rgba(210,174,99,0.08) 0%, transparent 55%);
 }
 .hero-noise {
   position: absolute;
@@ -169,14 +322,37 @@ input, textarea, button { font-family: inherit; }
 
 .hero-heading {
   font-family: var(--font-display);
-  font-size: clamp(90px, 12vw, 160px);
-  line-height: 0.88;
-  letter-spacing: 1px;
+  font-weight: 800;
+  font-size: clamp(52px, 7.4vw, 104px);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
   margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
 }
-.h-learn { display: block; color: var(--text-3); }
-.h-street { display: block; color: var(--text); }
-.h-guitar { display: block; color: var(--accent); }
+.h-learn { display: block; color: var(--text-3); margin-bottom: 4px; }
+/* STREET and GUITAR are the two signs on the post */
+.h-street, .h-guitar {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  background: linear-gradient(180deg, var(--sg-green-hi) 0%, var(--sg-green) 55%);
+  padding: 0.08em 0.28em 0.1em;
+  border-radius: 0.16em;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.35);
+}
+.h-street::before, .h-guitar::before {
+  content: '';
+  position: absolute;
+  inset: 0.07em;
+  border: max(3px, 0.04em) solid #fff;
+  border-radius: 0.11em;
+  pointer-events: none;
+}
+.h-street { transform: rotate(-1.5deg); }
+.h-guitar { transform: rotate(1deg); margin-left: 0.3em; }
 
 .hero-tagline {
   font-family: var(--font-display);
@@ -227,7 +403,7 @@ input, textarea, button { font-family: inherit; }
   width: 380px;
   height: 380px;
   border-radius: 50%;
-  border: 1px solid rgba(255,107,53,0.15);
+  border: 1px solid rgba(210,174,99,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,14 +414,14 @@ input, textarea, button { font-family: inherit; }
   width: 280px;
   height: 280px;
   border-radius: 50%;
-  border: 1px solid rgba(255,107,53,0.08);
-  background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 70%);
+  border: 1px solid rgba(210,174,99,0.08);
+  background: radial-gradient(circle, rgba(210,174,99,0.06) 0%, transparent 70%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 110px;
   line-height: 1;
-  filter: drop-shadow(0 0 40px rgba(255,107,53,0.3));
+  filter: drop-shadow(0 0 40px rgba(210,174,99,0.3));
 }
 .hero-float-tag {
   position: absolute;
@@ -297,7 +473,7 @@ input, textarea, button { font-family: inherit; }
 @keyframes pulse-line { 0%,100%{opacity:0.35} 50%{opacity:1} }
 
 /* ===== STATS STRIP ===== */
-.stats-strip { background: var(--accent); }
+.stats-strip { background: var(--sg-green); }
 .stats-inner {
   display: flex;
   align-items: stretch;
@@ -348,14 +524,14 @@ input, textarea, button { font-family: inherit; }
   position: relative;
   transition: background 0.25s;
 }
-.step-card:hover { background: #181818; }
+.step-card:hover { background: var(--bg-card-hover); }
 .step-num {
   position: absolute;
   top: 24px; right: 24px;
   font-family: var(--font-display);
   font-size: 72px;
   line-height: 1;
-  color: rgba(255,107,53,0.08);
+  color: rgba(210,174,99,0.08);
   user-select: none;
   letter-spacing: 0;
 }
@@ -396,7 +572,7 @@ input, textarea, button { font-family: inherit; }
   position: absolute;
   bottom: -18px;
   right: -18px;
-  background: var(--accent);
+  background: var(--sg-green);
   padding: 20px 24px;
   border-radius: var(--r);
 }
@@ -449,7 +625,7 @@ input, textarea, button { font-family: inherit; }
   padding: 40px 32px;
   transition: background 0.25s;
 }
-.benefit-card:hover { background: #181818; }
+.benefit-card:hover { background: var(--bg-card-hover); }
 .benefit-icon { display: block; font-size: 28px; margin-bottom: 16px; }
 .benefit-card h3 {
   font-family: var(--font-display);
@@ -492,7 +668,7 @@ input, textarea, button { font-family: inherit; }
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--sg-green);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -518,7 +694,7 @@ input, textarea, button { font-family: inherit; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  background: var(--accent);
+  background: var(--sg-green);
 }
 .pricing-tag-label {
   display: inline-block;
@@ -689,7 +865,7 @@ input, textarea, button { font-family: inherit; }
 
 /* ===== FOOTER ===== */
 .footer {
-  background: #050505;
+  background: #0A0F18;
   padding: 56px 0 28px;
   border-top: 1px solid var(--border);
 }
@@ -730,7 +906,7 @@ input, textarea, button { font-family: inherit; }
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--sg-green);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -763,7 +939,7 @@ input, textarea, button { font-family: inherit; }
   border-radius: var(--r);
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(255,107,53,0.2);
+  border: 1px solid rgba(210,174,99,0.2);
   flex-shrink: 0;
 }
 .hero-photo {

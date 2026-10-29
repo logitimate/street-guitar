@@ -1,7 +1,8 @@
 import { computed, Component, inject, signal } from '@angular/core';
 import { CurrencyPipe, PercentPipe, DatePipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NavUserChip } from '../../components/nav-user-chip';
 
 export type ViewMode = 'all' | 'online' | 'inperson';
 export interface MonthRevenue { month: string; revenue: number; }
@@ -20,14 +21,11 @@ interface Metrics {
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.html',
   styleUrl:    './admin-dashboard.css',
-  imports: [RouterLink, CurrencyPipe, PercentPipe, DatePipe],
+  imports: [RouterLink, CurrencyPipe, PercentPipe, DatePipe, NavUserChip],
 })
 export class AdminDashboard {
-  auth   = inject(AuthService);
-  router = inject(Router);
-  today  = new Date();
-
-  logout() { this.auth.logout(); this.router.navigate(['/login']); }
+  auth  = inject(AuthService);
+  today = new Date();
 
   /* ── View toggle ─────────────────────────────────────── */
   selectedView = signal<ViewMode>('all');

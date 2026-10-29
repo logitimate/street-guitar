@@ -1,0 +1,9 @@
+The guitar sound in every app: shared/sounds/38-85.mp3 and every strum in shared/strums/,
+except woodblock.mp3, mute-down.mp3 and mute-up.mp3 (those are David's)
+
+Source: github.com/sfzinstruments/Discord-SFZ-GM-Bank, Discord GM/Melodic/026-Acoustic Guitar (steel).sfz
+(2017 Martin HD28 Vintage Series single notes, recorded by Jeff Learman).
+License stated in that file: Creative Commons CC0 (public domain dedication). No credit required.
+The open chord strums were built by Cowork on Oct 25 2026 from those notes; every other strum and every
+note between the 15 samples was made from them by Claude Code (the sfz's nearest sample, retuned).
+Every file is raised to true pitch (A440) by the samples' measured cents (they were recorded 4 to 15 cents flat). Same CC0 status.
