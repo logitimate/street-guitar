@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   main:
-    runs-on: ubuntu-latest
+    # Pinned: Playwright doesn't support ubuntu-latest (Ubuntu 26) yet
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
